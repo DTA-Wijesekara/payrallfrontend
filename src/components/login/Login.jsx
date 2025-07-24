@@ -11,19 +11,28 @@ export default function LoginPage() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError('');
     try {
-      const { data } = await axios.post('/api/auth/login', { email, password });
-      localStorage.setItem('token', data.accessToken);
+      const baseUrl = process.env.REACT_APP_API_BASE_URL;
+      const response = await axios.post(`${baseUrl}/api/auth/login`, {
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('email', response.data.email);
+      localStorage.setItem('roles', JSON.stringify(response.data.roles));
       navigate('/home');
     } catch (err) {
-      setError('Invalid credentials');
+      const serverError = err.response?.data?.errors?.['']?.[0];
+      setError(serverError || 'Invalid credentials');
+      console.error(err);
     }
   };
 
   return (
     <div className="container d-flex vh-100 align-items-center justify-content-center">
       <div className="card p-4 shadow" style={{ maxWidth: 400, width: '100%' }}>
-        <h3 className="text-center mb-3">Sign In</h3>
+        <h3 className="text-center mb-3">Sign In</h3>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">

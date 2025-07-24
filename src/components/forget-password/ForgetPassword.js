@@ -5,14 +5,20 @@ export default function ForgetPassword() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
     try {
-      await axios.post('/api/auth/forget-password', { email });
+      const baseUrl = process.env.REACT_APP_API_BASE_URL;
+      await axios.post(`${baseUrl}/api/auth/forgot-password`, { email });
       setSent(true);
-    } catch {
-      setError('Email not found');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Email not found');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,7 +38,9 @@ export default function ForgetPassword() {
                 <label className="form-label">Email</label>
                 <input className="form-control" value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
-              <button className="btn btn-primary w-100">Send reset link</button>
+              <button className="btn btn-primary w-100" disabled={loading}>
+                {loading ? 'Sending...' : 'Send reset link'}
+              </button>
             </form>
           </>
         )}
