@@ -1,24 +1,44 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 
 export default function ResetPassword() {
-  const { token } = useParams();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const tokenFromUrl = query.get('token');
+  const emailFromUrl = query.get('email');
+
+  const [email, setEmail] = useState('');
+  const [token, setToken] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [done, setDone] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (emailFromUrl && tokenFromUrl) {
+      setEmail(emailFromUrl);
+      setToken(tokenFromUrl);
+    }
+  }, [emailFromUrl, tokenFromUrl]);
 
   const handleSubmit = async e => {
     e.preventDefault();
     if (password !== confirm) {
       return setError('Passwords do not match');
     }
+
     try {
-      await axios.post('/api/auth/reset-password', { token, password });
+      const baseUrl = process.env.REACT_APP_API_BASE_URL;
+      await axios.post(`${baseUrl}/api/auth/reset-password`, {
+        email,
+        token,
+        newPassword: password,
+        confirmPassword: confirm
+      });
       setDone(true);
-    } catch {
-      setError('Invalid or expired link');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid or expired link');
     }
   };
 
@@ -28,13 +48,17 @@ export default function ResetPassword() {
         {done ? (
           <>
             <h4 className="text-center">Password reset!</h4>
-            <Link to="/login" className="btn btn-success w-100 mt-3">Return to Login</Link>
+            <Link to="/login" className="btn btn-primary w-100 mt-3">Return to Login</Link>
           </>
         ) : (
           <>
             <h4 className="text-center mb-3">Set New Password</h4>
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input type="email" className="form-control" value={email} onChange={e => setEmail(e.target.value)} required />
+              </div>
               <div className="mb-3">
                 <label className="form-label">New Password</label>
                 <input type="password" className="form-control" value={password} onChange={e => setPassword(e.target.value)} required />
