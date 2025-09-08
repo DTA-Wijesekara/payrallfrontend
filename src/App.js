@@ -4,6 +4,7 @@ import Login from './components/login/Login';
 import ForgetPassword from './components/forget-password/ForgetPassword';
 import ResetPassword from './components/reset-password/ResetPassword.js';
 import Home from './pages/Home.js'
+import Employees from './pages/Employees.js';
 import AppLayout from './layouts/AppLayout.js';
 import AuthLayout from './layouts/AuthLayout.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,6 +24,7 @@ function App() {
 
         <Route element={<AppLayout />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/employees" element={<Employees />} />
         </Route>
 
       </Routes>
