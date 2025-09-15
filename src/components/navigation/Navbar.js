@@ -61,7 +61,7 @@ export default function Navbar({ onToggleSidebar } = {}) {
           </div>
 
           {/* Middle: optional search (hidden on small screens) */}
-          <div className="hidden md:flex flex-1 px-6">
+          {/* <div className="hidden md:flex flex-1 px-6">
             <div className="w-full max-w-xl">
               <label htmlFor="nav-search" className="sr-only">Search</label>
               <div className="relative">
@@ -78,7 +78,7 @@ export default function Navbar({ onToggleSidebar } = {}) {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Right: user */}
           <div className="flex items-center gap-3">

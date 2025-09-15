@@ -16,17 +16,17 @@ export default function Footer() {
           </div>
 
           <nav className="flex flex-wrap items-center gap-3 text-sm">
-            <a href="/about" className="px-3 py-1 rounded-md hover:bg-white/10 transition">About</a>
-            <a href="/privacy" className="px-3 py-1 rounded-md hover:bg-white/10 transition">Privacy</a>
-            <a href="/terms" className="px-3 py-1 rounded-md hover:bg-white/10 transition">Terms</a>
-            <a href="/contact" className="px-3 py-1 rounded-md hover:bg-white/10 transition">Contact</a>
+            <a href="/home" className="px-3 py-1 rounded-md hover:bg-white/10 transition">About</a>
+            <a href="/home" className="px-3 py-1 rounded-md hover:bg-white/10 transition">Privacy</a>
+            <a href="/home" className="px-3 py-1 rounded-md hover:bg-white/10 transition">Terms</a>
+            <a href="/home" className="px-3 py-1 rounded-md hover:bg-white/10 transition">Contact</a>
           </nav>
         </div>
 
         <div className="mt-4 border-t border-white/10 pt-4 text-center sm:text-left flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <small className="text-xs text-slate-300">© {new Date().getFullYear()} Arithmos. All rights reserved.</small>
           <div className="text-xs text-slate-300">
-            Built with <span className="text-pink-400">❤</span> • Responsive UI
+            • Responsive UI
           </div>
         </div>
       </div>

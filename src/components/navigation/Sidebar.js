@@ -13,7 +13,12 @@ import {
 const LINKS = [
   { to: '/home', label: 'Home', Icon: HiHome },
   { to: '/employees', label: 'Employees', Icon: HiUsers },
-  { to: '/profile', label: 'Profile', Icon: HiUser },
+  { to: '/generatesalary', label: 'Generate Salary', Icon: HiUser },
+  { to: '/salaryreports', label: 'Salary Reports', Icon: HiUser },
+  { to: '/loan', label: 'Loans', Icon: HiUser },
+  { to: '/empcategories', label: 'Employee Categories', Icon: HiUser },
+  { to: '/departments', label: 'Departments', Icon: HiUser },
+  { to: '/OT', label: 'OT Settings', Icon: HiUser },
 ];
 
 export default function Sidebar() {
