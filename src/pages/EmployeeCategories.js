@@ -87,13 +87,13 @@ export default function EmployeeCategories() {
             <p className="text-sm text-gray-500 mt-1">Manage categories — view, edit, or remove.</p>
           </div>
           <div className="flex items-center gap-3">
-            <button
+            {/* <button
               type="button"
               onClick={() => { setEditCategory({}); setIsEditModalOpen(true); }}
               className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition"
             >
               <FaPlus /> Create New
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -130,11 +130,11 @@ export default function EmployeeCategories() {
                             onClick={() => openEditModal(cat)}
                             className="p-2 rounded-md text-indigo-600 hover:bg-indigo-50 transition"
                           ><FaEdit /></button>
-                          <button
+                          {/* <button
                             aria-label={`delete-${cat.id}`}
                             onClick={() => deleteCategory(cat.id)}
                             className="p-2 rounded-md text-red-600 hover:bg-red-50 transition"
-                          ><FaTrash /></button>
+                          ><FaTrash /></button> */}
                         </div>
                       </td>
                     </tr>
@@ -162,7 +162,7 @@ export default function EmployeeCategories() {
                 <div className="flex flex-col items-end gap-2">
                   <button onClick={() => fetchCategoryById(cat.id)} className="p-2 rounded-md text-blue-600 hover:bg-blue-50 transition"><FaEye /></button>
                   <button onClick={() => openEditModal(cat)} className="p-2 rounded-md text-indigo-600 hover:bg-indigo-50 transition"><FaEdit /></button>
-                  <button onClick={() => deleteCategory(cat.id)} className="p-2 rounded-md text-red-600 hover:bg-red-50 transition"><FaTrash /></button>
+                  {/* <button onClick={() => deleteCategory(cat.id)} className="p-2 rounded-md text-red-600 hover:bg-red-50 transition"><FaTrash /></button> */}
                 </div>
               </div>
             ))
