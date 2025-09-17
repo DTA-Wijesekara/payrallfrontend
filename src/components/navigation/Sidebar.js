@@ -15,6 +15,7 @@ const LINKS = [
   { to: '/employees', label: 'Employees', Icon: HiUsers },
   { to: '/generatesalary', label: 'Generate Salary', Icon: HiUser },
   { to: '/salaryreports', label: 'Salary Reports', Icon: HiUser },
+  { to: '/leaves', label: 'Leaves', Icon: HiUser },
   { to: '/loan', label: 'Loans', Icon: HiUser },
   { to: '/empcategories', label: 'Employee Categories', Icon: HiUser },
   { to: '/departments', label: 'Departments', Icon: HiUser },
@@ -164,14 +165,14 @@ export default function Sidebar() {
           </div>
         </nav>
 
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <button
             onClick={() => (window.location.href = '/logout')}
             className={`w-full text-sm text-left px-3 py-2 rounded-md transition ${collapsed ? 'text-gray-600' : 'text-gray-700 hover:bg-gray-50'}`}
           >
             {!collapsed ? 'Sign out' : '⎋'}
           </button>
-        </div>
+        </div> */}
       </aside>
     </>
   );

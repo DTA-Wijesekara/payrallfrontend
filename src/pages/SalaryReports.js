@@ -1,194 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { FaEye, FaPrint, FaFilePdf } from "react-icons/fa";
-// import jsPDF from "jspdf";
-// import "jspdf-autotable";
-
-// export default function SalaryReports() {
-//   const [reports, setReports] = useState([]);
-//   const [selectedReport, setSelectedReport] = useState(null);
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-
-//   useEffect(() => {
-//     fetchReports();
-//   }, []);
-
-//   const fetchReports = async () => {
-//     try {
-//       const res = await axios.get(
-//         `${process.env.REACT_APP_API_BASE_URL}/api/calculations/salaryreports`
-//       );
-//       setReports(res.data);
-//     } catch (err) {
-//       console.error("Error fetching Salary Reports", err);
-//     }
-//   };
-
-//   const fetchReportById = async (id) => {
-//     try {
-//       const res = await axios.get(
-//         `${process.env.REACT_APP_API_BASE_URL}/api/calculations/salaryreports/employee/${id}`
-//       );
-//       setSelectedReport(res.data[0]); // taking first record for employee
-//       setIsModalOpen(true);
-//     } catch (err) {
-//       console.error("Error fetching Salary Report details", err);
-//     }
-//   };
-
-//   const downloadPdf = (report) => {
-//     const doc = new jsPDF();
-//     doc.text("Salary Report", 14, 15);
-
-//     doc.autoTable({
-//       startY: 25,
-//       head: [["Field", "Value"]],
-//       body: [
-//         ["Employee ID", report.employeeId],
-//         ["Year", report.year],
-//         ["Month", report.month],
-//         ["Working Days", report.workingDays],
-//         ["Gross Salary", report.grossSalary],
-//         ["Net Salary", report.netSalary],
-//         ["Total Deductions", report.totalDeductions],
-//         ["OT Payment", report.totalOTPayment],
-//         ["Generated On", new Date(report.generatedOn).toLocaleString()],
-//       ],
-//     });
-
-//     doc.save(`SalaryReport_${report.employeeId}_${report.month}_${report.year}.pdf`);
-//   };
-
-//   const printReport = (report) => {
-//     const printContent = `
-//       <h2>Salary Report</h2>
-//       <p><b>Employee ID:</b> ${report.employeeId}</p>
-//       <p><b>Year:</b> ${report.year}</p>
-//       <p><b>Month:</b> ${report.month}</p>
-//       <p><b>Working Days:</b> ${report.workingDays}</p>
-//       <p><b>Gross Salary:</b> ${report.grossSalary}</p>
-//       <p><b>Net Salary:</b> ${report.netSalary}</p>
-//       <p><b>Total Deductions:</b> ${report.totalDeductions}</p>
-//       <p><b>OT Payment:</b> ${report.totalOTPayment}</p>
-//       <p><b>Generated On:</b> ${new Date(report.generatedOn).toLocaleString()}</p>
-//     `;
-//     const printWindow = window.open("", "", "height=600,width=800");
-//     printWindow.document.write("<html><body>");
-//     printWindow.document.write(printContent);
-//     printWindow.document.write("</body></html>");
-//     printWindow.document.close();
-//     printWindow.print();
-//   };
-
-//   return (
-//     <div className="min-h-screen p-6 bg-gray-50">
-//       <div className="max-w-7xl mx-auto">
-//         {/* Header */}
-//         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-//           <div>
-//             <h1 className="text-2xl font-semibold text-gray-800">Salary Reports</h1>
-//             <p className="text-sm text-gray-500 mt-1">
-//               View, print, and download salary reports.
-//             </p>
-//           </div>
-//         </div>
-
-//         {/* Table */}
-//         <div className="hidden sm:block bg-white shadow rounded-lg overflow-hidden">
-//           <div className="w-full overflow-x-auto">
-//             <table className="min-w-full divide-y divide-gray-200">
-//               <thead className="bg-gray-50">
-//                 <tr>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Employee</th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Year</th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Month</th>
-//                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Net Salary</th>
-//                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
-//                 </tr>
-//               </thead>
-//               <tbody className="bg-white divide-y divide-gray-100">
-//                 {reports.length > 0 ? (
-//                   reports.map((report) => (
-//                     <tr key={report.id} className="hover:bg-gray-50">
-//                       <td className="px-6 py-4 text-sm text-gray-700">{report.id}</td>
-//                       <td className="px-6 py-4 text-sm text-gray-800">{report.employeeId}</td>
-//                       <td className="px-6 py-4 text-sm text-gray-600">{report.year}</td>
-//                       <td className="px-6 py-4 text-sm text-gray-600">{report.month}</td>
-//                       <td className="px-6 py-4 text-sm text-gray-600">{report.netSalary}</td>
-//                       <td className="px-6 py-4 text-center text-sm">
-//                         <div className="inline-flex items-center gap-2">
-//                           <button
-//                             aria-label={`view-${report.id}`}
-//                             onClick={() => fetchReportById(report.employeeId)}
-//                             className="p-2 rounded-md text-blue-600 hover:bg-blue-50 transition"
-//                           >
-//                             <FaEye />
-//                           </button>
-//                           <button
-//                             aria-label={`print-${report.id}`}
-//                             onClick={() => printReport(report)}
-//                             className="p-2 rounded-md text-green-600 hover:bg-green-50 transition"
-//                           >
-//                             <FaPrint />
-//                           </button>
-//                           <button
-//                             aria-label={`pdf-${report.id}`}
-//                             onClick={() => downloadPdf(report)}
-//                             className="p-2 rounded-md text-red-600 hover:bg-red-50 transition"
-//                           >
-//                             <FaFilePdf />
-//                           </button>
-//                         </div>
-//                       </td>
-//                     </tr>
-//                   ))
-//                 ) : (
-//                   <tr>
-//                     <td colSpan="6" className="px-6 py-8 text-center text-sm text-gray-500">
-//                       No Salary Reports found
-//                     </td>
-//                   </tr>
-//                 )}
-//               </tbody>
-//             </table>
-//           </div>
-//         </div>
-
-//         {/* Modal */}
-//         {isModalOpen && selectedReport && (
-//           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-//             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-//               <h2 className="text-xl font-bold mb-4">Salary Report Details</h2>
-//               <p><b>Employee ID:</b> {selectedReport.employeeId}</p>
-//               <p><b>Year:</b> {selectedReport.year}</p>
-//               <p><b>Month:</b> {selectedReport.month}</p>
-//               <p><b>Gross Salary:</b> {selectedReport.grossSalary}</p>
-//               <p><b>Net Salary:</b> {selectedReport.netSalary}</p>
-//               <p><b>Deductions:</b> {selectedReport.totalDeductions}</p>
-//               <p><b>OT Payment:</b> {selectedReport.totalOTPayment}</p>
-//               <button
-//                 onClick={() => setIsModalOpen(false)}
-//                 className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
-//               >
-//                 Close
-//               </button>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaEye, FaDownload, FaPrint, FaFilter, FaSearch } from "react-icons/fa";
@@ -289,7 +98,7 @@ export default function SalaryReports() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-800">Salary Reports</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Salary Reports</h1>
             <p className="text-sm text-gray-500 mt-1">
               View and manage employee salary reports.
             </p>
@@ -358,7 +167,7 @@ export default function SalaryReports() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Report ID</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gross Salary</th>
@@ -371,7 +180,7 @@ export default function SalaryReports() {
                     {filteredReports.length > 0 ? (
                       filteredReports.map((report) => (
                         <tr key={report.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">#{report.id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{report.id}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                             {report.Employe ? `${report.Employe.firstName} ${report.Employe.lastName}` : `Employee ${report.employeeId}`}
                           </td>
@@ -381,7 +190,7 @@ export default function SalaryReports() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                             {formatCurrency(report.grossSalary)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-600">
                             {formatCurrency(report.netSalary)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

@@ -83,7 +83,7 @@ export default function EmployeeCategories() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-800">Employee Categories</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Employee Categories</h1>
             <p className="text-sm text-gray-500 mt-1">Manage categories — view, edit, or remove.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -103,10 +103,10 @@ export default function EmployeeCategories() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Day Salary Based</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Employment Type</th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -114,10 +114,10 @@ export default function EmployeeCategories() {
                 {categories.length > 0 ? (
                   categories.map((cat) => (
                     <tr key={cat.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm text-gray-700">{cat.id}</td>
+                      {/* <td className="px-6 py-4 text-sm text-gray-700">{cat.id}</td> */}
                       <td className="px-6 py-4 text-sm text-gray-800">{cat.categoryName}</td>
                       <td className="px-6 py-4 text-sm text-gray-600 truncate max-w-xs">{cat.description}</td>
-                      <td className="px-6 py-4 text-sm text-center">{cat.daySalarybased ? 'Yes' : 'No'}</td>
+                      <td className="px-6 py-4 text-sm text-center">{cat.daySalarybased ? 'Day Salary Based' : 'Monthly Salary'}</td>
                       <td className="px-6 py-4 text-center text-sm">
                         <div className="inline-flex items-center gap-2">
                           <button
@@ -204,7 +204,7 @@ export default function EmployeeCategories() {
                 <label>Day Salary Based</label>
               </div>
               <div className="flex gap-3 mt-2">
-                <button type="button" onClick={createOrUpdateCategory} className="px-4 py-2 bg-green-600 text-white rounded">Save</button>
+                <button type="button" onClick={createOrUpdateCategory} className="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
                 <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
               </div>
             </form>
@@ -217,10 +217,10 @@ export default function EmployeeCategories() {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Category Details</h2>
-            <p><strong>ID:</strong> {selectedCategory.id}</p>
+            {/* <p><strong>ID:</strong> {selectedCategory.id}</p> */}
             <p><strong>Name:</strong> {selectedCategory.categoryName}</p>
             <p><strong>Description:</strong> {selectedCategory.description}</p>
-            <p><strong>Day Salary Based:</strong> {selectedCategory.daySalarybased ? 'Yes' : 'No'}</p>
+            <p><strong>Salary Based:</strong> {selectedCategory.daySalarybased ? 'Day Salary' : 'Monthly Salary'}</p>
             <button onClick={() => setIsModalOpen(false)} className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg">Close</button>
           </div>
         </div>

@@ -14,7 +14,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import GenerateSalary from './pages/GenerateSalary.js';
 import SalaryReports from './pages/SalaryReports.js';
 import Loan from './pages/Loan.js';
-
+import Leaves from './pages/Leaves.js';
 
 function App() {
   return (
@@ -33,6 +33,7 @@ function App() {
           <Route path="/employees" element={<Employees />} />
           <Route path="/empcategories" element={<EmployeeCategories />} />
           <Route path="/generatesalary" element={<GenerateSalary />} />
+          <Route path="/leaves" element={<Leaves />} />
           <Route path="/loan" element={<Loan />} />
           <Route path="/salaryreports" element={<SalaryReports />} />
           {<Route path="/departments" element={<Departments />} />}

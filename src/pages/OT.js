@@ -70,19 +70,19 @@ export default function OT() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-800">Overtime Rates</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Overtime Rates</h1>
             <p className="text-sm text-gray-500 mt-1">
               Manage overtime types and rates.
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button
+            {/* <button
               type="button"
               onClick={() => setIsCreateModalOpen(true)}
               className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition"
             >
               <FaPlus /> Create New
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -92,7 +92,7 @@ export default function OT() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -102,7 +102,7 @@ export default function OT() {
                 {ots.length > 0 ? (
                   ots.map((ot) => (
                     <tr key={ot.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{ot.id}</td>
+                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{ot.id}</td> */}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{ot.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{ot.rate}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-center text-sm">
@@ -121,13 +121,13 @@ export default function OT() {
                           >
                             <FaEdit />
                           </button>
-                          <button
+                          {/* <button
                             aria-label={`delete-${ot.id}`}
                             onClick={() => deleteOT(ot.id)}
                             className="p-2 rounded-md text-red-600 hover:bg-red-50 transition"
                           >
                             <FaTrash />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
@@ -171,13 +171,13 @@ export default function OT() {
                   >
                     <FaEdit />
                   </button>
-                  <button
+                  {/* <button
                     aria-label={`delete-${ot.id}`}
                     onClick={() => deleteOT(ot.id)}
                     className="p-2 rounded-md text-red-600 hover:bg-red-50 transition"
                   >
                     <FaTrash />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ))
@@ -297,10 +297,10 @@ export default function OT() {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">OT Details</h2>
-            <p><strong>ID:</strong> {selectedOT.id}</p>
+            {/* <p><strong>ID:</strong> {selectedOT.id}</p> */}
             <p><strong>Name:</strong> {selectedOT.name}</p>
             <p><strong>Rate:</strong> {selectedOT.rate}</p>
-            <p><strong>Active:</strong> {selectedOT.isActive ? "Yes" : "No"}</p>
+            {/* <p><strong>Active:</strong> {selectedOT.isActive ? "Yes" : "No"}</p> */}
             <button
               onClick={() => setIsModalOpen(false)}
               className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"

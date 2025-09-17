@@ -762,7 +762,7 @@ export default function GenerateSalary() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-gray-800">Generate Salary Report</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Generate Salary Report</h1>
           <p className="text-sm text-gray-500 mt-1">
             Create new salary reports for employees.
           </p>
