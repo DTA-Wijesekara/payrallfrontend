@@ -1,207 +1,6 @@
-// import React, { useEffect, useState } from "react";
-
-// export default function GenerateSalary() {
-//   const [employees, setEmployees] = useState([]);
-//   const [form, setForm] = useState({
-//     employeeId: "",
-//     year: new Date().getFullYear(),
-//     month: new Date().getMonth() + 1,
-//     workingDays: 0,
-//     incentives: 0,
-//     bonus: 0,
-//     salaryAdvances: 0,
-//     loans: 0,
-//     otherDeductions: 0,
-//     leaveDays: 0,
-//     halfDays: 0,
-//     noPayDays: 0,
-//     ot1Hours: 0,
-//     ot2Hours: 0,
-//   });
-//   const [report, setReport] = useState(null);
-
-//   // Load employees from API
-//   useEffect(() => {
-//     fetch("/api/Employe")
-//       .then((res) => res.json())
-//       .then((data) => setEmployees(data));
-//   }, []);
-
-//   const handleChange = (field, value) => {
-//     setForm({ ...form, [field]: value });
-//   };
-
-//   const handleSubmit = async () => {
-//     const res = await fetch("/api/SalaryReport/generate", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(form),
-//     });
-
-//     if (res.ok) {
-//       const data = await res.json();
-//       setReport(data);
-//     } else {
-//       alert("Error generating salary report");
-//     }
-//   };
-
-//   return (
-//     <div className="p-8 bg-gray-50 min-h-screen">
-//       <div className="bg-white shadow rounded-2xl p-6 max-w-4xl mx-auto">
-//         <h1 className="text-2xl font-bold mb-6 text-gray-700">
-//           Generate Salary Report
-//         </h1>
-
-//         {/* Employee Selector */}
-//         <div className="mb-4">
-//           <label className="block text-sm font-medium mb-1">Employee</label>
-//           <select
-//             value={form.employeeId}
-//             onChange={(e) => handleChange("employeeId", e.target.value)}
-//             className="w-full border rounded-lg p-2"
-//           >
-//             <option value="">Select Employee</option>
-//             {employees.map((emp) => (
-//               <option key={emp.id} value={emp.id}>
-//                 {emp.fullName} ({emp.employeeNumber})
-//               </option>
-//             ))}
-//           </select>
-//         </div>
-
-//         {/* Month & Year */}
-//         <div className="grid grid-cols-2 gap-4 mb-4">
-//           <div>
-//             <label className="block text-sm font-medium mb-1">Year</label>
-//             <input
-//               type="number"
-//               value={form.year}
-//               onChange={(e) => handleChange("year", e.target.value)}
-//               className="w-full border rounded-lg p-2"
-//             />
-//           </div>
-//           <div>
-//             <label className="block text-sm font-medium mb-1">Month</label>
-//             <input
-//               type="number"
-//               min="1"
-//               max="12"
-//               value={form.month}
-//               onChange={(e) => handleChange("month", e.target.value)}
-//               className="w-full border rounded-lg p-2"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Salary Inputs */}
-//         <div className="grid grid-cols-2 gap-4">
-//           <input
-//             type="number"
-//             placeholder="Working Days"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("workingDays", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="Incentives"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("incentives", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="Bonus"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("bonus", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="Salary Advances"
-//             className="border rounded-lg p-2"
-//             onChange={(e) =>
-//               handleChange("salaryAdvances", Number(e.target.value))
-//             }
-//           />
-//           <input
-//             type="number"
-//             placeholder="Loans"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("loans", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="Other Deductions"
-//             className="border rounded-lg p-2"
-//             onChange={(e) =>
-//               handleChange("otherDeductions", Number(e.target.value))
-//             }
-//           />
-//           <input
-//             type="number"
-//             placeholder="Leave Days"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("leaveDays", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="Half Days"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("halfDays", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="No Pay Days"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("noPayDays", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="OT1 Hours"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("ot1Hours", Number(e.target.value))}
-//           />
-//           <input
-//             type="number"
-//             placeholder="OT2 Hours"
-//             className="border rounded-lg p-2"
-//             onChange={(e) => handleChange("ot2Hours", Number(e.target.value))}
-//           />
-//         </div>
-
-//         {/* Submit */}
-//         <div className="mt-6 flex justify-end">
-//           <button
-//             onClick={handleSubmit}
-//             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-//           >
-//             Generate
-//           </button>
-//         </div>
-
-//         {/* Report Result */}
-//         {report && (
-//           <div className="mt-8 bg-gray-100 p-4 rounded-lg">
-//             <h2 className="text-lg font-semibold mb-2">Salary Report</h2>
-//             <p><strong>Employee:</strong> {report.employee.fullName}</p>
-//             <p><strong>Month:</strong> {report.month}/{report.year}</p>
-//             <p><strong>Gross Salary:</strong> {report.grossSalary}</p>
-//             <p><strong>Net Salary:</strong> {report.netSalary}</p>
-//             <p><strong>Total Deductions:</strong> {report.totalDeductions}</p>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
-// import { FaPlus, FaEye, FaCalculator } from "react-icons/fa";
+// import { FaPlus, FaEye, FaCalculator, FaExclamationTriangle } from "react-icons/fa";
 
 // export default function GenerateSalary() {
 //   const [employees, setEmployees] = useState([]);
@@ -224,19 +23,67 @@
 //   const [generatedReport, setGeneratedReport] = useState(null);
 //   const [isModalOpen, setIsModalOpen] = useState(false);
 //   const [loading, setLoading] = useState(false);
+//   const [employeeLoading, setEmployeeLoading] = useState(true);
 //   const [message, setMessage] = useState({ text: "", type: "" });
+//   const [activeLoan, setActiveLoan] = useState(null);
+//   const [loanLoading, setLoanLoading] = useState(false);
 
 //   useEffect(() => {
 //     fetchEmployees();
 //   }, []);
 
+//   useEffect(() => {
+//     if (formData.employeeId) {
+//       fetchActiveLoan(formData.employeeId);
+//     } else {
+//       setActiveLoan(null);
+//       setFormData(prev => ({
+//         ...prev,
+//         loans: 0
+//       }));
+//     }
+//   }, [formData.employeeId]);
+
 //   const fetchEmployees = async () => {
 //     try {
-//       const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/employee`);
+//       setEmployeeLoading(true);
+//       const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/employe`);
 //       setEmployees(res.data);
+//       setEmployeeLoading(false);
 //     } catch (err) {
 //       console.error("Error fetching employees", err);
 //       showMessage("Failed to load employees", "error");
+//       setEmployeeLoading(false);
+//     }
+//   };
+
+//   const fetchActiveLoan = async (employeeId) => {
+//     try {
+//       setLoanLoading(true);
+//       const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/loan/active/${employeeId}`);
+//       if (res.data) {
+//         setActiveLoan(res.data);
+//         // auto-fill loan installment into form
+//         setFormData(prev => ({
+//           ...prev,
+//           loans: res.data.monthlyInstallment
+//         }));
+//       } else {
+//         setActiveLoan(null);
+//         setFormData(prev => ({
+//           ...prev,
+//           loans: 0
+//         }));
+//       }
+//       setLoanLoading(false);
+//     } catch (err) {
+//       // if no loan, clear loan state
+//       setActiveLoan(null);
+//       setFormData(prev => ({
+//         ...prev,
+//         loans: 0
+//       }));
+//       setLoanLoading(false);
 //     }
 //   };
 
@@ -298,7 +145,7 @@
 //       <div className="max-w-4xl mx-auto">
 //         {/* Header */}
 //         <div className="mb-6">
-//           <h1 className="text-2xl font-semibold text-gray-800">Generate Salary Report</h1>
+//           <h1 className="text-3xl font-bold text-gray-800">Generate Salary Report</h1>
 //           <p className="text-sm text-gray-500 mt-1">
 //             Create new salary reports for employees.
 //           </p>
@@ -318,20 +165,26 @@
 //               {/* Employee Selection */}
 //               <div>
 //                 <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-//                 <select
-//                   name="employeeId"
-//                   value={formData.employeeId}
-//                   onChange={handleChange}
-//                   required
-//                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//                 >
-//                   <option value="">Select Employee</option>
-//                   {employees.map(employee => (
-//                     <option key={employee.id} value={employee.id}>
-//                       {employee.firstName} {employee.lastName} (ID: {employee.id})
-//                     </option>
-//                   ))}
-//                 </select>
+//                 {employeeLoading ? (
+//                   <div className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 animate-pulse">
+//                     Loading employees...
+//                   </div>
+//                 ) : (
+//                   <select
+//                     name="employeeId"
+//                     value={formData.employeeId}
+//                     onChange={handleChange}
+//                     required
+//                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+//                   >
+//                     <option value="">Select Employee</option>
+//                     {employees.map(employee => (
+//                       <option key={employee.id} value={employee.id}>
+//                         {employee.fullName} ({employee.employeeNumber})
+//                       </option>
+//                     ))}
+//                   </select>
+//                 )}
 //               </div>
 
 //               {/* Year Selection */}
@@ -383,7 +236,7 @@
 
 //               {/* Leave Days */}
 //               <div>
-//                 <label className="block text-sm font-medium text-gray-700 mb-1">Leave Days</label>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">Leave Days (Staff only)</label>
 //                 <input
 //                   type="number"
 //                   name="leaveDays"
@@ -398,7 +251,7 @@
 
 //               {/* Half Days */}
 //               <div>
-//                 <label className="block text-sm font-medium text-gray-700 mb-1">Half Days</label>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">Half Days (staff only)</label>
 //                 <input
 //                   type="number"
 //                   name="halfDays"
@@ -413,7 +266,7 @@
 
 //               {/* No Pay Days */}
 //               <div>
-//                 <label className="block text-sm font-medium text-gray-700 mb-1">No Pay Days</label>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">No Pay Days (Staff only)</label>
 //                 <input
 //                   type="number"
 //                   name="noPayDays"
@@ -428,7 +281,7 @@
 
 //               {/* OT1 Hours */}
 //               <div>
-//                 <label className="block text-sm font-medium text-gray-700 mb-1">OT1 Hours</label>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">Regular OT Hours</label>
 //                 <input
 //                   type="number"
 //                   name="ot1Hours"
@@ -443,7 +296,7 @@
 
 //               {/* OT2 Hours */}
 //               <div>
-//                 <label className="block text-sm font-medium text-gray-700 mb-1">OT2 Hours</label>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">Double OT Hours</label>
 //                 <input
 //                   type="number"
 //                   name="ot2Hours"
@@ -501,21 +354,6 @@
 //                 />
 //               </div>
 
-//               {/* Loans */}
-//               <div>
-//                 <label className="block text-sm font-medium text-gray-700 mb-1">Loans</label>
-//                 <input
-//                   type="number"
-//                   name="loans"
-//                   value={formData.loans}
-//                   onChange={handleChange}
-//                   min="0"
-//                   step="0.01"
-//                   required
-//                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//                 />
-//               </div>
-
 //               {/* Other Deductions */}
 //               <div>
 //                 <label className="block text-sm font-medium text-gray-700 mb-1">Other Deductions</label>
@@ -530,12 +368,58 @@
 //                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
 //                 />
 //               </div>
+
+//               {/* Loans Section */}
+//               <div className="md:col-span-2">
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">Loan Deductions</label>
+                
+//                 {loanLoading ? (
+//                   <div className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 animate-pulse mb-3">
+//                     Checking for active loans...
+//                   </div>
+//                 ) : activeLoan ? (
+//                   <div className="col-span-2 p-4 bg-blue-50 border border-blue-300 rounded-md mb-4">
+//                     <div className="flex items-center mb-2">
+//                       <FaExclamationTriangle className="text-blue-500 mr-2" />
+//                       <span className="font-medium text-blue-800">Active Loan Found</span>
+//                     </div>
+//                     <p className="text-sm text-gray-800">
+//                       <span className="font-medium">Loan Amount:</span> {formatCurrency(activeLoan.principalAmount)}<br />
+//                       <span className="font-medium">Remaining Balance:</span> {formatCurrency(activeLoan.remainingBalance)}<br />
+//                       <span className="font-medium">Monthly Installment:</span> {formatCurrency(activeLoan.monthlyInstallment)}
+//                     </p>
+//                     <p className="text-xs text-gray-600 mt-1">
+//                       The installment field below has been auto-filled, but you may adjust it.
+//                     </p>
+//                   </div>
+//                 ) : (
+//                   <p className="text-sm text-gray-500 mb-2">No active loans found for this employee.</p>
+//                 )}
+                
+//                 <input
+//                   type="number"
+//                   name="loans"
+//                   value={formData.loans}
+//                   onChange={handleChange}
+//                   min="0"
+//                   step="0.01"
+//                   required
+//                   disabled={!activeLoan}   //  disable if no active loan
+//                   className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+//                     !activeLoan ? "bg-gray-100 cursor-not-allowed" : ""
+//                   }`}
+//                 />
+//                 <p className="text-xs text-gray-500 mt-1">
+//                   Enter the amount to be deducted for loan repayments
+//                 </p>
+//               </div>
+
 //             </div>
 
 //             <div className="flex justify-end">
 //               <button
 //                 type="submit"
-//                 disabled={loading}
+//                 disabled={loading || employeeLoading || !formData.employeeId}
 //                 className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition disabled:opacity-50"
 //               >
 //                 {loading ? (
@@ -658,10 +542,9 @@
 
 
 
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaEye, FaCalculator } from "react-icons/fa";
+import { FaPlus, FaEye, FaCalculator, FaExclamationTriangle } from "react-icons/fa";
 
 export default function GenerateSalary() {
   const [employees, setEmployees] = useState([]);
@@ -679,17 +562,33 @@ export default function GenerateSalary() {
     halfDays: 0,
     noPayDays: 0,
     ot1Hours: 0,
-    ot2Hours: 0
+    ot2Hours: 0,
+    fromDate: new Date().toISOString().split('T')[0],
+    toDate: new Date().toISOString().split('T')[0]
   });
   const [generatedReport, setGeneratedReport] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [employeeLoading, setEmployeeLoading] = useState(true);
   const [message, setMessage] = useState({ text: "", type: "" });
+  const [activeLoan, setActiveLoan] = useState(null);
+  const [loanLoading, setLoanLoading] = useState(false);
 
   useEffect(() => {
     fetchEmployees();
   }, []);
+
+  useEffect(() => {
+    if (formData.employeeId) {
+      fetchActiveLoan(formData.employeeId);
+    } else {
+      setActiveLoan(null);
+      setFormData(prev => ({
+        ...prev,
+        loans: 0
+      }));
+    }
+  }, [formData.employeeId]);
 
   const fetchEmployees = async () => {
     try {
@@ -704,6 +603,34 @@ export default function GenerateSalary() {
     }
   };
 
+  const fetchActiveLoan = async (employeeId) => {
+    try {
+      setLoanLoading(true);
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/loan/active/${employeeId}`);
+      if (res.data) {
+        setActiveLoan(res.data);
+        setFormData(prev => ({
+          ...prev,
+          loans: res.data.monthlyInstallment
+        }));
+      } else {
+        setActiveLoan(null);
+        setFormData(prev => ({
+          ...prev,
+          loans: 0
+        }));
+      }
+      setLoanLoading(false);
+    } catch (err) {
+      setActiveLoan(null);
+      setFormData(prev => ({
+        ...prev,
+        loans: 0
+      }));
+      setLoanLoading(false);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -712,8 +639,45 @@ export default function GenerateSalary() {
     }));
   };
 
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+    const newFormData = {
+      ...formData,
+      [name]: value
+    };
+
+    if (newFormData.fromDate && newFormData.toDate) {
+      const fromDate = new Date(newFormData.fromDate);
+      const toDate = new Date(newFormData.toDate);
+      
+      const workingDays = calculateBusinessDays(fromDate, toDate);
+      newFormData.workingDays = workingDays;
+    }
+
+    setFormData(newFormData);
+  };
+
+  const calculateBusinessDays = (startDate, endDate) => {
+    let count = 0;
+    const curDate = new Date(startDate.getTime());
+    
+    while (curDate <= endDate) {
+      const dayOfWeek = curDate.getDay();
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
+      curDate.setDate(curDate.getDate() + 1);
+    }
+    
+    return count;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (new Date(formData.fromDate) > new Date(formData.toDate)) {
+      showMessage("From date cannot be after to date", "error");
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -753,7 +717,6 @@ export default function GenerateSalary() {
     return months[month - 1] || month;
   };
 
-  // Generate years for dropdown (current year and previous 5 years)
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
 
@@ -797,7 +760,7 @@ export default function GenerateSalary() {
                     <option value="">Select Employee</option>
                     {employees.map(employee => (
                       <option key={employee.id} value={employee.id}>
-                        {employee.fullName} (ID: {employee.id})
+                        {employee.fullName} ({employee.employeeNumber})
                       </option>
                     ))}
                   </select>
@@ -836,9 +799,37 @@ export default function GenerateSalary() {
                 </select>
               </div>
 
+              {/* From Date */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">From</label>
+                <input
+                  type="date"
+                  name="fromDate"
+                  value={formData.fromDate}
+                  onChange={handleDateChange}
+                  required
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              {/* To Date */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
+                <input
+                  type="date"
+                  name="toDate"
+                  value={formData.toDate}
+                  onChange={handleDateChange}
+                  required
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
               {/* Working Days */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Working Days</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Working Days
+                </label>
                 <input
                   type="number"
                   name="workingDays"
@@ -849,11 +840,14 @@ export default function GenerateSalary() {
                   required
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Automatically calculated from selected dates
+                </p>
               </div>
 
               {/* Leave Days */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Leave Days</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Leave Days (Staff only)</label>
                 <input
                   type="number"
                   name="leaveDays"
@@ -868,7 +862,7 @@ export default function GenerateSalary() {
 
               {/* Half Days */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Half Days</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Half Days (staff only)</label>
                 <input
                   type="number"
                   name="halfDays"
@@ -883,7 +877,7 @@ export default function GenerateSalary() {
 
               {/* No Pay Days */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">No Pay Days</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">No Pay Days (Staff only)</label>
                 <input
                   type="number"
                   name="noPayDays"
@@ -898,7 +892,7 @@ export default function GenerateSalary() {
 
               {/* OT1 Hours */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">OT1 Hours</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Regular OT Hours (Staff only)</label>
                 <input
                   type="number"
                   name="ot1Hours"
@@ -913,7 +907,7 @@ export default function GenerateSalary() {
 
               {/* OT2 Hours */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">OT2 Hours</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Double OT Hours (Staff only)</label>
                 <input
                   type="number"
                   name="ot2Hours"
@@ -971,21 +965,6 @@ export default function GenerateSalary() {
                 />
               </div>
 
-              {/* Loans */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Loans</label>
-                <input
-                  type="number"
-                  name="loans"
-                  value={formData.loans}
-                  onChange={handleChange}
-                  min="0"
-                  step="0.01"
-                  required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
               {/* Other Deductions */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Other Deductions</label>
@@ -1000,6 +979,52 @@ export default function GenerateSalary() {
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
+
+              {/* Loans Section */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Loan Deductions</label>
+                
+                {loanLoading ? (
+                  <div className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 animate-pulse mb-3">
+                    Checking for active loans...
+                  </div>
+                ) : activeLoan ? (
+                  <div className="col-span-2 p-4 bg-blue-50 border border-blue-300 rounded-md mb-4">
+                    <div className="flex items-center mb-2">
+                      <FaExclamationTriangle className="text-blue-500 mr-2" />
+                      <span className="font-medium text-blue-800">Active Loan Found</span>
+                    </div>
+                    <p className="text-sm text-gray-800">
+                      <span className="font-medium">Loan Amount:</span> {formatCurrency(activeLoan.principalAmount)}<br />
+                      <span className="font-medium">Remaining Balance:</span> {formatCurrency(activeLoan.remainingBalance)}<br />
+                      <span className="font-medium">Monthly Installment:</span> {formatCurrency(activeLoan.monthlyInstallment)}
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      The installment field below has been auto-filled, but you may adjust it.
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 mb-2">No active loans found for this employee.</p>
+                )}
+                
+                <input
+                  type="number"
+                  name="loans"
+                  value={formData.loans}
+                  onChange={handleChange}
+                  min="0"
+                  step="0.01"
+                  required
+                  disabled={!activeLoan}
+                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                    !activeLoan ? "bg-gray-100 cursor-not-allowed" : ""
+                  }`}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the amount to be deducted for loan repayments
+                </p>
+              </div>
+
             </div>
 
             <div className="flex justify-end">
@@ -1033,6 +1058,7 @@ export default function GenerateSalary() {
                 <div className="space-y-2">
                   <p><span className="font-medium">Employee ID:</span> {generatedReport.employeeId}</p>
                   <p><span className="font-medium">Period:</span> {formatMonth(generatedReport.month)} {generatedReport.year}</p>
+                  <p><span className="font-medium">Date Range:</span> {new Date(generatedReport.fromDate).toLocaleDateString()} - {new Date(generatedReport.toDate).toLocaleDateString()}</p>
                   <p><span className="font-medium">Salary Type:</span> {generatedReport.isDaySalaryBased ? "Day Salary Based" : "Monthly Salary Based"}</p>
                 </div>
               </div>

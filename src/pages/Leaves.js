@@ -251,7 +251,7 @@ export default function Leaves() {
                 onChange={(e) => setYear(parseInt(e.target.value))}
                 className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                {[2023, 2024, 2025, 2026].map(y => (
+                {[2025, 2026].map(y => (
                   <option key={y} value={y}>{y}</option>
                 ))}
               </select>
@@ -277,29 +277,29 @@ export default function Leaves() {
                       <h3 className="text-sm font-medium text-blue-800">Annual Leaves Allocated</h3>
                       <p className="text-2xl font-bold text-blue-600">{leaveBalance.annualLeavesAllocated}</p>
                     </div>
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <h3 className="text-sm font-medium text-green-800">Annual Leaves Used</h3>
-                      <p className="text-2xl font-bold text-green-600">{leaveBalance.annualLeavesUsed}</p>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="text-sm font-medium text-blue-800">Annual Leaves Used</h3>
+                      <p className="text-2xl font-bold text-blue-600">{leaveBalance.annualLeavesUsed}</p>
                     </div>
-                    <div className="bg-orange-50 p-4 rounded-lg">
-                      <h3 className="text-sm font-medium text-orange-800">Casual Leaves Allocated</h3>
-                      <p className="text-2xl font-bold text-orange-600">{leaveBalance.casualLeavesAllocated}</p>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="text-sm font-medium text-blue-800">Casual Leaves Allocated</h3>
+                      <p className="text-2xl font-bold text-blue-600">{leaveBalance.casualLeavesAllocated}</p>
                     </div>
-                    <div className="bg-purple-50 p-4 rounded-lg">
-                      <h3 className="text-sm font-medium text-purple-800">Casual Leaves Used</h3>
-                      <p className="text-2xl font-bold text-purple-600">{leaveBalance.casualLeavesUsed}</p>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="text-sm font-medium text-blue-800">Casual Leaves Used</h3>
+                      <p className="text-2xl font-bold text-blue-600">{leaveBalance.casualLeavesUsed}</p>
                     </div>
-                    <div className="bg-teal-50 p-4 rounded-lg col-span-2">
-                      <h3 className="text-sm font-medium text-teal-800">Annual Leaves Remaining</h3>
-                      <p className="text-2xl font-bold text-teal-600">{leaveBalance.annualLeavesRemaining}</p>
+                    <div className="bg-blue-50 p-4 rounded-lg col-span-2">
+                      <h3 className="text-sm font-medium text-blue-800">Annual Leaves Remaining</h3>
+                      <p className="text-2xl font-bold text-blue-600">{leaveBalance.annualLeavesRemaining}</p>
                     </div>
-                    <div className="bg-pink-50 p-4 rounded-lg col-span-2">
-                      <h3 className="text-sm font-medium text-pink-800">Casual Leaves Remaining</h3>
-                      <p className="text-2xl font-bold text-pink-600">{leaveBalance.casualLeavesRemaining}</p>
+                    <div className="bg-blue-50 p-4 rounded-lg col-span-2">
+                      <h3 className="text-sm font-medium text-blue-800">Casual Leaves Remaining</h3>
+                      <p className="text-2xl font-bold text-blue-600">{leaveBalance.casualLeavesRemaining}</p>
                     </div>
-                    <div className="bg-gray-50 p-4 rounded-lg col-span-4">
-                      <h3 className="text-sm font-medium text-gray-800">Total Leaves Remaining</h3>
-                      <p className="text-2xl font-bold text-gray-700">{leaveBalance.totalLeavesRemaining}</p>
+                    <div className="bg-blue-50 p-4 rounded-lg col-span-4">
+                      <h3 className="text-sm font-medium text-blue-800">Total Leaves Remaining</h3>
+                      <p className="text-2xl font-bold text-blue-700">{leaveBalance.totalLeavesRemaining}</p>
                     </div>
                   </div>
                 ) : (

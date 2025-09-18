@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-import { FaEdit, FaTrash, FaPlus, FaEye, FaFilter, FaSearch, FaUndo, FaCalendar, FaMoneyBill, FaBuilding, FaIdCard, FaPercent } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaEye, FaFilter, FaSearch, FaUndo } from "react-icons/fa";
 
 export default function Employees() {
   const [employees, setEmployees] = useState([]);
@@ -22,8 +22,8 @@ export default function Employees() {
     joinedDate: "",
     terminationDate: "",
     phoneNumber: "",
-    departmentID: null,
-    employeeCategoriesID: null,
+    departmentID: "",
+    employeeCategoriesID: "",
     basicSalary: 0,
     daySalary: 0,
     kpiRate: 0,
@@ -202,8 +202,8 @@ const fetchEmployeeCategories = async () => {
         joinedDate: "",
         terminationDate: "",
         phoneNumber: "",
-        departmentID: null,
-        employeeCategoriesID: null,
+        departmentID: "",
+        employeeCategoriesID: "",
         basicSalary: 0,
         daySalary: 0,
         kpiRate: 0,
@@ -471,7 +471,7 @@ const fetchEmployeeCategories = async () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">KPI Alowance (Staff Only)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">KPI Allowance (Staff Only)</label>
                   <input
                     type="number"
                     name="kpiAmount"
@@ -683,7 +683,7 @@ const fetchEmployeeCategories = async () => {
                  Employment Details
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Department ID</label>
                   <input
                     type="text"
@@ -692,9 +692,9 @@ const fetchEmployeeCategories = async () => {
                     onChange={handleNewEmployeeChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                </div>
+                </div> */}
 
-                <div>
+                {/* <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
                     <select
                       name="departmentID"
@@ -717,6 +717,40 @@ const fetchEmployeeCategories = async () => {
                       name="employeeCategoriesID"
                       value={editEmployee.employeeCategoriesID || ""}
                       onChange={handleEditChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value="">Select Category</option>
+                      {employeeCategories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.categoryName}
+                        </option>
+                      ))}
+                    </select>
+                  </div> */}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                    <select
+                      name="departmentID"
+                      value={newEmployee.departmentID || ""}
+                      onChange={handleNewEmployeeChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value="">Select Department</option>
+                      {departments.map((dept) => (
+                        <option key={dept.id} value={dept.id}>
+                          {dept.departmentName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Employee Category</label>
+                    <select
+                      name="employeeCategoriesID"
+                      value={newEmployee.employeeCategoriesID || ""}
+                      onChange={handleNewEmployeeChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
                       <option value="">Select Category</option>
@@ -1084,7 +1118,7 @@ const fetchEmployeeCategories = async () => {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <div className="text-sm font-medium text-gray-800">{employee.fullName}</div>
-                        <div className="text-xs text-gray-500 mt-1">ID: #{employee.id} | {employee.employeeNumber}</div>
+                        <div className="text-xs text-gray-500 mt-1">ID: {employee.employeeNumber}</div>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
@@ -1127,11 +1161,11 @@ const fetchEmployeeCategories = async () => {
                       <div>
                         <span className="font-medium">Email:</span> {employee.email}
                       </div>
-                      <div>
+                      {/* <div>
                         <span className="font-medium">Phone:</span> {employee.phoneNumber}
-                      </div>
+                      </div> */}
                       <div>
-                        <span className="font-medium">Salary:</span> {formatCurrency(employee.basicSalary || employee.daySalary)}
+                        <span className="font-medium">Department:</span> {departments.find(dept => dept.id === employee.departmentID)?.departmentName || 'N/A'}
                       </div>
                       <div>
                         <span className="font-medium">Joined:</span> {formatDate(employee.joinedDate)}
@@ -1164,8 +1198,12 @@ const fetchEmployeeCategories = async () => {
                   <p><span className="font-medium">Employee Number:</span> {selectedEmployee.employeeNumber}</p>
                   <p><span className="font-medium">NIC:</span> {selectedEmployee.nic}</p>
                   <p><span className="font-medium">Joined Date:</span> {formatDate(selectedEmployee.joinedDate)}</p>
-                  <p><span className="font-medium">Employee Category:</span> {selectedEmployee.nic}</p>
-                  <p><span className="font-medium">Department:</span> {selectedEmployee.nic}</p>
+                  <p><span className="font-medium">Employee Category:</span> {
+                    employeeCategories.find(cat => cat.id === selectedEmployee.employeeCategoriesID)?.categoryName || 'N/A'
+                  }</p>
+                  <p><span className="font-medium">Department:</span> {
+                    departments.find(dept => dept.id === selectedEmployee.departmentID)?.departmentName || 'N/A'
+                  }</p>
                   {/* <p><span className="font-medium">Termination Date:</span> {formatDate(selectedEmployee.terminationDate)}</p> */}
                 </div>
               </div>
@@ -1187,7 +1225,7 @@ const fetchEmployeeCategories = async () => {
                   {selectedEmployee.employeeCategoriesID === 5 && (
                     <>
                       <p><span className="font-medium">Basic Salary:</span> {formatCurrency(selectedEmployee.basicSalary)}</p>
-                      <p><span className="font-medium">KPI Amount:</span> {formatCurrency(selectedEmployee.kpiAmount)}</p>
+                      <p><span className="font-medium">KPI Allowance:</span> {formatCurrency(selectedEmployee.kpiAmount)}</p>
                       <p><span className="font-medium">BRA1:</span> {formatCurrency(selectedEmployee.bra1)}</p>
                       <p><span className="font-medium">BRA2:</span> {formatCurrency(selectedEmployee.bra2)}</p>
                     </>
