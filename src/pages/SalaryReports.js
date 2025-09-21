@@ -573,8 +573,8 @@ export default function SalaryReports() {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
-    }).format(amount || 0);
+      currency: 'LKR'
+    }).format(amount);
   };
 
   // Generate years for filter (current year and previous 5 years)
@@ -912,6 +912,11 @@ export default function SalaryReports() {
               <div>
                 <h3 className="text-lg font-semibold mb-2 text-gray-800">Salary Summary</h3>
                 <div className="space-y-2">
+                  {selectedReport.isDaySalaryBased && (
+                    <>
+                      <p><span className="font-medium">Day Salary:</span> {formatCurrency(selectedReport.epf1)}</p>
+                    </>
+                  )}
                   <p><span className="font-medium">Gross Salary:</span> {formatCurrency(selectedReport.grossSalary)}</p>
                   <p><span className="font-medium">Total Deductions:</span> {formatCurrency(selectedReport.totalDeductions)}</p>
                   <p><span className="font-medium">Net Salary:</span> <span className="font-semibold text-green-600">{formatCurrency(selectedReport.netSalary)}</span></p>
@@ -961,7 +966,10 @@ export default function SalaryReports() {
                 <div>
                   <p><span className="font-medium">Working Days:</span> {selectedReport.workingDays}</p>
                 </div>
-                <div>
+
+                {!selectedReport.isDaySalaryBased && (
+                    <>
+                      <div>
                   <p><span className="font-medium">Leave Days:</span> {selectedReport.leaveDays}</p>
                 </div>
                 <div>
@@ -976,6 +984,8 @@ export default function SalaryReports() {
                 <div>
                   <p><span className="font-medium">Double OT Hours:</span> {selectedReport.ot2Hours}</p>
                 </div>
+                    </>
+                )}
               </div>
             </div>
             

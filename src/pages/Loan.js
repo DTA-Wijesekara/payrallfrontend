@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaMoneyBill, FaCalendar, FaList, FaPlus, FaEdit, FaTrash, FaEye, FaSync, FaDollarSign, FaUser } from 'react-icons/fa';
+import { FaMoneyBill, FaCalendar, FaList, FaPlus, FaEdit, FaTrash, FaEye, FaSync, FaDollarSign, FaUser, FaCreditCard } from 'react-icons/fa';
 
 export default function Loan() {
   const [activeTab, setActiveTab] = useState('loans');
@@ -189,7 +189,7 @@ export default function Loan() {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'LKR'
     }).format(amount);
   };
 
@@ -254,10 +254,10 @@ export default function Loan() {
                     <thead className="bg-gray-50">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Principal Amount (LKR.)</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Principal Amount</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Term (Months)</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monthly Installment (LKR.)</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining Balance (LKR.)</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monthly Installment</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining Balance</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -271,16 +271,16 @@ export default function Loan() {
                               {getEmployeeName(loan.employeID)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {(loan.principalAmount)}
+                              {formatCurrency(loan.principalAmount)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {loan.termMonths}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {(loan.monthlyInstallment)}
+                              {formatCurrency(loan.monthlyInstallment)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {(loan.remainingBalance)}
+                              {formatCurrency(loan.remainingBalance)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {formatDate(loan.startDate)}
@@ -299,7 +299,7 @@ export default function Loan() {
                                   }}
                                   className="text-indigo-600 hover:text-indigo-900"
                                 >
-                                  <FaEdit />
+                                  <FaCreditCard />
                                 </button>
                                 <button
                                   onClick={() => deleteLoan(loan.id)}
@@ -333,8 +333,9 @@ export default function Loan() {
               <div>
                 <h2 className="text-xl font-semibold text-gray-700">Repayments for {getEmployeeName(selectedLoan.employeID)}</h2>
                 <p className="text-gray-600">
-                  Principal LKR . {(selectedLoan.principalAmount)} | 
-                  Remaining LKR . {(selectedLoan.remainingBalance)}
+                  Principal : {formatCurrency(selectedLoan.principalAmount)} | 
+                  Remaining : {formatCurrency(selectedLoan.remainingBalance)} |
+                  Installment : {formatCurrency(selectedLoan.monthlyInstallment)}
                 </p>
               </div>
               <div className="flex gap-3">
@@ -365,8 +366,8 @@ export default function Loan() {
                       <tr>
                         {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month No</th> */}
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount (LKR.)</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining Balance (LKR.)</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining Balance</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                       </tr>
                     </thead>
@@ -381,10 +382,10 @@ export default function Loan() {
                               {formatDate(repayment.paymentDate)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {(repayment.installmentAmount)}
+                              {formatCurrency(repayment.installmentAmount)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {(repayment.remainingBalance)}
+                              {formatCurrency(repayment.remainingBalance)}
                             </td>
                             <td className="px-6 py-4 text-sm text-gray-500">
                               {repayment.description}

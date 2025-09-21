@@ -8,18 +8,29 @@ import {
   HiUser,
   HiChevronLeft,
   HiChevronRight,
+  HiDatabase,
+  HiDocument,
+  HiFire,
+  HiCalculator,
+  HiCash,
+  HiDuplicate,
+  HiGlobe,
+  HiFlag,
+  HiCalendar
 } from 'react-icons/hi';
 
 const LINKS = [
   { to: '/home', label: 'Home', Icon: HiHome },
   { to: '/employees', label: 'Employees', Icon: HiUsers },
-  { to: '/generatesalary', label: 'Generate Salary', Icon: HiUser },
-  { to: '/salaryreports', label: 'Salary Reports', Icon: HiUser },
-  { to: '/leaves', label: 'Leaves', Icon: HiUser },
-  { to: '/loan', label: 'Loans', Icon: HiUser },
-  { to: '/empcategories', label: 'Employee Categories', Icon: HiUser },
-  { to: '/departments', label: 'Departments', Icon: HiUser },
-  { to: '/OT', label: 'OT Settings', Icon: HiUser },
+  { to: '/generatesalary', label: 'Generate Salary', Icon: HiDatabase },
+  { to: '/salaryreports', label: 'Salary Reports', Icon: HiDocument },
+  { to: '/leaves', label: 'Leaves', Icon: HiFire },
+  { to: '/Otusage', label: 'OT Usage', Icon: HiCalculator },
+  { to: '/loan', label: 'Loans', Icon: HiCash },
+  { to: '/empcategories', label: 'Employee Categories', Icon: HiDuplicate },
+  { to: '/departments', label: 'Departments', Icon: HiGlobe },
+  { to: '/OT', label: 'OT Settings', Icon: HiFlag },
+  { to: '/specialHolidays', label: 'Special Holidays', Icon: HiCalendar },
 ];
 
 export default function Sidebar() {

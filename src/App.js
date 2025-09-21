@@ -15,6 +15,8 @@ import GenerateSalary from './pages/GenerateSalary.js';
 import SalaryReports from './pages/SalaryReports.js';
 import Loan from './pages/Loan.js';
 import Leaves from './pages/Leaves.js';
+import SpecialHolidays from './pages/SpecialHolidays.js';
+import OTusage from './pages/OTusage.js';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
           <Route path="/empcategories" element={<EmployeeCategories />} />
           <Route path="/generatesalary" element={<GenerateSalary />} />
           <Route path="/leaves" element={<Leaves />} />
+          <Route path="/specialHolidays" element={<SpecialHolidays />} />
+          <Route path="/otusage" element={<OTusage />} />
           <Route path="/loan" element={<Loan />} />
           <Route path="/salaryreports" element={<SalaryReports />} />
           {<Route path="/departments" element={<Departments />} />}
