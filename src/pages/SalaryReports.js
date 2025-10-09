@@ -1,6 +1,8 @@
-// import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState, useRef } from "react";
 // import axios from "axios";
 // import { FaEye, FaDownload, FaPrint, FaFilter, FaSearch } from "react-icons/fa";
+// import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
 
 // export default function SalaryReports() {
 //   const [reports, setReports] = useState([]);
@@ -11,6 +13,7 @@
 //   const [filterYear, setFilterYear] = useState("");
 //   const [filterMonth, setFilterMonth] = useState("");
 //   const [loading, setLoading] = useState(true);
+//   const reportRef = useRef();
 
 //   useEffect(() => {
 //     fetchSalaryReports();
@@ -61,16 +64,80 @@
 //     setIsModalOpen(true);
 //   };
 
-//   const downloadReport = (report) => {
-//     // In a real implementation, this would generate a PDF
-//     console.log("Downloading report:", report);
-//     alert(`Download functionality would be implemented for report ${report.id}`);
+//   const generatePDF = async (report) => {
+//     const input = reportRef.current;
+    
+//     // Create a canvas from the report content
+//     const canvas = await html2canvas(input, {
+//       scale: 2, // Higher quality
+//       useCORS: true,
+//       logging: false
+//     });
+    
+//     // Convert canvas to image data
+//     const imgData = canvas.toDataURL('image/png');
+    
+//     // Calculate PDF dimensions
+//     const imgWidth = 210; // A4 width in mm
+//     const pageHeight = 297; // A4 height in mm
+//     const imgHeight = canvas.height * imgWidth / canvas.width;
+    
+//     // Initialize PDF
+//     const pdf = new jsPDF('p', 'mm', 'a4');
+//     let heightLeft = imgHeight;
+//     let position = 0;
+    
+//     // Add first page
+//     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+//     heightLeft -= pageHeight;
+    
+//     // Add additional pages if needed
+//     while (heightLeft >= 0) {
+//       position = heightLeft - imgHeight;
+//       pdf.addPage();
+//       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+//       heightLeft -= pageHeight;
+//     }
+    
+//     return pdf;
 //   };
 
-//   const printReport = (report) => {
-//     // In a real implementation, this would print the report
-//     console.log("Printing report:", report);
-//     alert(`Print functionality would be implemented for report ${report.id}`);
+//   const downloadReport = async (report) => {
+//     try {
+//       setSelectedReport(report);
+      
+//       // Wait a moment for the DOM to update
+//       setTimeout(async () => {
+//         const pdf = await generatePDF(report);
+//         pdf.save(`Salary_Report_${report.employeeName}_${formatMonth(report.month)}_${report.year}.pdf`);
+//       }, 500);
+//     } catch (error) {
+//       console.error("Error generating PDF:", error);
+//       alert("Failed to generate PDF. Please try again.");
+//     }
+//   };
+
+//   const printReport = async (report) => {
+//     try {
+//       setSelectedReport(report);
+      
+//       // Wait a moment for the DOM to update
+//       setTimeout(async () => {
+//         const pdf = await generatePDF(report);
+        
+//         // Open PDF in new window for printing
+//         const pdfBlob = pdf.output('blob');
+//         const pdfUrl = URL.createObjectURL(pdfBlob);
+//         const printWindow = window.open(pdfUrl);
+        
+//         printWindow.onload = function() {
+//           printWindow.print();
+//         };
+//       }, 500);
+//     } catch (error) {
+//       console.error("Error printing report:", error);
+//       alert("Failed to print report. Please try again.");
+//     }
 //   };
 
 //   const formatMonth = (month) => {
@@ -84,13 +151,126 @@
 //   const formatCurrency = (amount) => {
 //     return new Intl.NumberFormat('en-US', {
 //       style: 'currency',
-//       currency: 'USD'
+//       currency: 'LKR'
 //     }).format(amount);
 //   };
 
 //   // Generate years for filter (current year and previous 5 years)
 //   const currentYear = new Date().getFullYear();
 //   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
+
+//   // PDF Template Component (now matches the Report Details Modal)
+//   const PDFTemplate = ({ report }) => (
+//     <div ref={reportRef} className="p-6 bg-white" style={{ width: '794px', minHeight: '1123px' }}>
+//       <h2 className="text-xl font-bold mb-4">Salary Report Details</h2>
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+//         <div>
+//           <h3 className="text-lg font-semibold mb-2 text-gray-800">Employee Information</h3>
+//           <div className="space-y-2 text-sm">
+//             <p><span className="font-medium">Report ID:</span> {report.id}</p>
+//             <p><span className="font-medium">Employee Number:</span> {report.employeeNumber}</p>
+//             <p><span className="font-medium">Employee Name:</span> {report.employeeName}</p>
+//             <p><span className="font-medium">Employee Category:</span> {report.categaryName}</p>
+//             <p><span className="font-medium">Employee Department:</span> {report.departmentName}</p>
+//             <p><span className="font-medium">Period:</span> {formatMonth(report.month)} {report.year}</p>
+//             <p><span className="font-medium">Date Range:</span> {new Date(report.fromDate).toLocaleDateString()} to {new Date(report.toDate).toLocaleDateString()}</p>
+//             <p><span className="font-medium">Generated On:</span> {new Date(report.generatedOn).toLocaleDateString()}</p>
+//           </div>
+//         </div>
+//         <div>
+//           <h3 className="text-lg font-semibold mb-2 text-gray-800">Salary Summary</h3>
+//           <div className="space-y-2 text-sm">
+//             {!report.isDaySalaryBased && (
+//               <p><span className="font-medium">EPF Liable Salary:</span> {formatCurrency(report.epfLiableSalary)}</p>
+//             )}
+//             <p><span className="font-medium">Gross Salary:</span> {formatCurrency(report.grossSalary)}</p>
+//             <p><span className="font-medium">Net Salary:</span> <span className="font-semibold text-green-600">{formatCurrency(report.netSalary)}</span></p>
+//           </div>
+//         </div>
+//       </div>
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+//         <div>
+//           <h3 className="text-lg font-semibold mb-2 text-gray-800">Earnings</h3>
+//           <div className="space-y-2 text-sm">
+//             {report.isDaySalaryBased && (
+//               <>
+//                 <p><span className="font-medium">Day Salary:</span> {formatCurrency(report.daySalary)}</p>
+//                 <p><span className="font-medium">KPI Rate:</span> {formatCurrency(report.kpiRate)}</p>
+//                 <p><span className="font-medium">Wages:</span> {formatCurrency(report.wages)}</p>
+//               </>
+//             )}
+//             {!report.isDaySalaryBased && (
+//               <>
+//                 <p><span className="font-medium">Basic Stationary Salary:</span> {formatCurrency(report.basicStationarySal)}</p>
+//                 <p><span className="font-medium">BRA 1:</span> {formatCurrency(report.bra1)}</p>
+//                 <p><span className="font-medium">BRA 2:</span> {formatCurrency(report.bra2)}</p>
+//                 <p><span className="font-medium">Basic Salary:</span> {formatCurrency(report.basicSala)}</p>
+//               </>
+//             )}
+//             <p><span className="font-medium">KPI Allowance:</span> {formatCurrency(report.kpiAllowance)}</p>
+//             <p><span className="font-medium">Incentives:</span> {formatCurrency(report.incentives)}</p>
+//             <p><span className="font-medium">Bonus:</span> {formatCurrency(report.bonus)}</p>
+//             {!report.isDaySalaryBased && (
+//               <>
+//                 <p><span className="font-medium">Regular OT Payment:</span> {formatCurrency(report.ot1Payment)}</p>
+//                 <p><span className="font-medium">Double OT Payment:</span> {formatCurrency(report.ot2Payment)}</p>
+//                 <p><span className="font-medium">Total OT Payment:</span> {formatCurrency(report.totalOtPayment)}</p>
+//               </>
+//             )}
+//           </div>
+//         </div>
+//         <div>
+//           <h3 className="text-lg font-semibold mb-2 text-gray-800">Deductions & Contributions</h3>
+//           <div className="space-y-2 text-sm">
+//             <p><span className="font-medium">Salary Advances:</span> {formatCurrency(report.salaryAdvances)}</p>
+//             <p><span className="font-medium">Loans:</span> {formatCurrency(report.loans)}</p>
+//             <p><span className="font-medium">Other Deductions:</span> {formatCurrency(report.otherDeductions)}</p>
+//             <p><span className="font-medium">Total Deductions:</span> {formatCurrency(report.totalDeductions)}</p>
+//             {!report.isDaySalaryBased && (
+//               <>
+//                 <p><span className="font-medium">No Pay:</span> {formatCurrency(report.noPay)}</p>
+//                 <p><span className="font-medium">EPF 1:</span> {formatCurrency(report.epf1)}</p>
+//                 <p><span className="font-medium">EPF 2:</span> {formatCurrency(report.epf2)}</p>
+//                 <p><span className="font-medium">ETF:</span> {formatCurrency(report.etf)}</p>
+//                 <p><span className="font-medium">Employee Contribution:</span> {formatCurrency(report.employeeContribution)}</p>
+//               </>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//       <div className="mb-6">
+//         <h3 className="text-lg font-semibold mb-2 text-gray-800">Attendance Details</h3>
+//         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+//           <div>
+//             <p><span className="font-medium">Working Days:</span> {report.workingDays}</p>
+//           </div>
+//           {!report.isDaySalaryBased && (
+//             <>
+//               <div>
+//                 <p><span className="font-medium">Leave Days:</span> {report.leaveDays}</p>
+//               </div>
+//               <div>
+//                 <p><span className="font-medium">Half Days:</span> {report.halfDays}</p>
+//               </div>
+//               <div>
+//                 <p><span className="font-medium">No Pay Days:</span> {report.noPayDays}</p>
+//               </div>
+//               <div>
+//                 <p><span className="font-medium">Regular OT Hours:</span> {report.ot1Hours}</p>
+//               </div>
+//               <div>
+//                 <p><span className="font-medium">Double OT Hours:</span> {report.ot2Hours}</p>
+//               </div>
+//             </>
+//           )}
+//         </div>
+//       </div>
+//       <div className="mt-8 pt-4 border-t text-xs text-gray-500 text-center">
+//         <p>This is an auto-generated salary report. For any discrepancies, please contact the HR department.</p>
+//         <p>Generated on: {new Date().toLocaleDateString()}</p>
+//       </div>
+//     </div>
+//   );
 
 //   return (
 //     <div className="min-h-screen p-6 bg-gray-50">
@@ -170,7 +350,6 @@
 //                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Report ID</th>
 //                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
 //                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
-//                       {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gross Salary</th> */}
 //                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Salary</th>
 //                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Generated On</th>
 //                       <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -183,15 +362,12 @@
 //                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{report.id}</td>
 //                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
 //                             <div className="text-sm font-medium text-gray-800">{report.employeeName}</div>
-//                           <div className="text-xs text-gray-500 mt-1">Employee ID: {report.employeeNumber}</div>
+//                             <div className="text-xs text-gray-500 mt-1">Employee ID: {report.employeeNumber}</div>
 //                           </td>
 //                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
 //                             {formatMonth(report.month)} {report.year}
 //                           </td>
-//                           {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-//                             {formatCurrency(report.grossSalary)}
-//                           </td> */}
-//                           <td className="px-6 py-4 whitespace-nowrap text-sm text-600">
+//                           <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">
 //                             {formatCurrency(report.netSalary)}
 //                           </td>
 //                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -226,7 +402,7 @@
 //                       ))
 //                     ) : (
 //                       <tr>
-//                         <td colSpan="7" className="px-6 py-8 text-center text-sm text-gray-500">
+//                         <td colSpan="6" className="px-6 py-8 text-center text-sm text-gray-500">
 //                           No salary reports found
 //                         </td>
 //                       </tr>
@@ -319,7 +495,7 @@
 //                   <p><span className="font-medium">Employee Category:</span> {selectedReport.categaryName}</p>
 //                   <p><span className="font-medium">Employee Department:</span> {selectedReport.departmentName}</p>
 //                   <p><span className="font-medium">Period:</span> {formatMonth(selectedReport.month)} {selectedReport.year}</p>
-//                   <p><span className="font-medium">Period:</span> {new Date(selectedReport.fromDate).toLocaleDateString()} to {new Date(selectedReport.toDate).toLocaleDateString()}</p>
+//                   <p><span className="font-medium">Date Range:</span> {new Date(selectedReport.fromDate).toLocaleDateString()} to {new Date(selectedReport.toDate).toLocaleDateString()}</p>
 //                   <p><span className="font-medium">Generated On:</span> {new Date(selectedReport.generatedOn).toLocaleDateString()}</p>
 //                 </div>
 //               </div>
@@ -327,8 +503,12 @@
 //               <div>
 //                 <h3 className="text-lg font-semibold mb-2 text-gray-800">Salary Summary</h3>
 //                 <div className="space-y-2">
+//                   {!selectedReport.isDaySalaryBased && (
+//                     <>
+//                       <p><span className="font-medium">EPF Liable Salary:</span> {formatCurrency(selectedReport.epfLiableSalary)}</p>
+//                     </>
+//                   )}
 //                   <p><span className="font-medium">Gross Salary:</span> {formatCurrency(selectedReport.grossSalary)}</p>
-//                   <p><span className="font-medium">Total Deductions:</span> {formatCurrency(selectedReport.totalDeductions)}</p>
 //                   <p><span className="font-medium">Net Salary:</span> <span className="font-semibold text-green-600">{formatCurrency(selectedReport.netSalary)}</span></p>
 //                 </div>
 //               </div>
@@ -338,13 +518,32 @@
 //               <div>
 //                 <h3 className="text-lg font-semibold mb-2 text-gray-800">Earnings</h3>
 //                 <div className="space-y-2">
-//                   <p><span className="font-medium">Wages:</span> {formatCurrency(selectedReport.wages)}</p>
+//                   {selectedReport.isDaySalaryBased && (
+//                     <>
+//                       <p><span className="font-medium">Day Salary:</span> {formatCurrency(selectedReport.daySalary)}</p>
+//                       <p><span className="font-medium">KPI Rate:</span> {formatCurrency(selectedReport.kpiRate)}</p>
+//                       <p><span className="font-medium">Wages:</span> {formatCurrency(selectedReport.wages)}</p>
+//                     </>
+//                   )}
+                  
+//                   {!selectedReport.isDaySalaryBased && (
+//                     <>
+//                       <p><span className="font-medium">Basic Stationary Salary:</span> {formatCurrency(selectedReport.basicStationarySal)}</p>
+//                       <p><span className="font-medium">BRA 1:</span> {formatCurrency(selectedReport.bra1)}</p>
+//                       <p><span className="font-medium">BRA 2:</span> {formatCurrency(selectedReport.bra2)}</p>
+//                       <p><span className="font-medium">Basic Salary:</span> {formatCurrency(selectedReport.basicSala)}</p>
+//                     </>
+//                   )}
 //                   <p><span className="font-medium">KPI Allowance:</span> {formatCurrency(selectedReport.kpiAllowance)}</p>
 //                   <p><span className="font-medium">Incentives:</span> {formatCurrency(selectedReport.incentives)}</p>
 //                   <p><span className="font-medium">Bonus:</span> {formatCurrency(selectedReport.bonus)}</p>
-//                   <p><span className="font-medium">Regular OT Payment:</span> {formatCurrency(selectedReport.ot1Payment)}</p>
-//                   <p><span className="font-medium">Double OT Payment:</span> {formatCurrency(selectedReport.ot1Payment)}</p>
-//                   <p><span className="font-medium">Total OT Payment:</span> {formatCurrency(selectedReport.totalOtPayment)}</p>
+//                   {!selectedReport.isDaySalaryBased && (
+//                     <>
+//                       <p><span className="font-medium">Regular OT Payment:</span> {formatCurrency(selectedReport.ot1Payment)}</p>
+//                       <p><span className="font-medium">Double OT Payment:</span> {formatCurrency(selectedReport.ot2Payment)}</p>
+//                       <p><span className="font-medium">Total OT Payment:</span> {formatCurrency(selectedReport.totalOtPayment)}</p>
+//                     </>
+//                   )}
 //                 </div>
 //               </div>
               
@@ -354,9 +553,16 @@
 //                   <p><span className="font-medium">Salary Advances:</span> {formatCurrency(selectedReport.salaryAdvances)}</p>
 //                   <p><span className="font-medium">Loans:</span> {formatCurrency(selectedReport.loans)}</p>
 //                   <p><span className="font-medium">Other Deductions:</span> {formatCurrency(selectedReport.otherDeductions)}</p>
-//                   <p><span className="font-medium">EPF 1:</span> {formatCurrency(selectedReport.epf1)}</p>
-//                   <p><span className="font-medium">EPF 2:</span> {formatCurrency(selectedReport.epf2)}</p>
-//                   <p><span className="font-medium">ETF:</span> {formatCurrency(selectedReport.etf)}</p>
+//                   <p><span className="font-medium">Total Deductions:</span> {formatCurrency(selectedReport.totalDeductions)}</p>
+//                   {!selectedReport.isDaySalaryBased && (
+//                     <>
+//                       <p><span className="font-medium">No Pay:</span> {formatCurrency(selectedReport.noPay)}</p>
+//                       <p><span className="font-medium">EPF 1:</span> {formatCurrency(selectedReport.epf1)}</p>
+//                       <p><span className="font-medium">EPF 2:</span> {formatCurrency(selectedReport.epf2)}</p>
+//                       <p><span className="font-medium">ETF:</span> {formatCurrency(selectedReport.etf)}</p>
+//                       <p><span className="font-medium">Employee Contribution:</span> {formatCurrency(selectedReport.employeeContribution)}</p>
+//                     </>
+//                   )}
 //                 </div>
 //               </div>
 //             </div>
@@ -367,7 +573,10 @@
 //                 <div>
 //                   <p><span className="font-medium">Working Days:</span> {selectedReport.workingDays}</p>
 //                 </div>
-//                 <div>
+
+//                 {!selectedReport.isDaySalaryBased && (
+//                     <>
+//                       <div>
 //                   <p><span className="font-medium">Leave Days:</span> {selectedReport.leaveDays}</p>
 //                 </div>
 //                 <div>
@@ -382,6 +591,8 @@
 //                 <div>
 //                   <p><span className="font-medium">Double OT Hours:</span> {selectedReport.ot2Hours}</p>
 //                 </div>
+//                     </>
+//                 )}
 //               </div>
 //             </div>
             
@@ -406,6 +617,13 @@
 //               </button>
 //             </div>
 //           </div>
+//         </div>
+//       )}
+
+//       {/* Hidden PDF Template (for generating PDFs) */}
+//       {selectedReport && (
+//         <div className="fixed -left-[9999px] top-0">
+//           <PDFTemplate report={selectedReport} />
 //         </div>
 //       )}
 //     </div>
@@ -436,6 +654,7 @@ export default function SalaryReports() {
   const [filterMonth, setFilterMonth] = useState("");
   const [loading, setLoading] = useState(true);
   const reportRef = useRef();
+  const printRef = useRef();
 
   useEffect(() => {
     fetchSalaryReports();
@@ -489,31 +708,55 @@ export default function SalaryReports() {
   const generatePDF = async (report) => {
     const input = reportRef.current;
     
-    // Create a canvas from the report content
     const canvas = await html2canvas(input, {
-      scale: 2, // Higher quality
+      scale: 2,
       useCORS: true,
       logging: false
     });
     
-    // Convert canvas to image data
     const imgData = canvas.toDataURL('image/png');
-    
-    // Calculate PDF dimensions
-    const imgWidth = 210; // A4 width in mm
-    const pageHeight = 297; // A4 height in mm
+    const imgWidth = 210;
+    const pageHeight = 297;
     const imgHeight = canvas.height * imgWidth / canvas.width;
     
-    // Initialize PDF
     const pdf = new jsPDF('p', 'mm', 'a4');
     let heightLeft = imgHeight;
     let position = 0;
     
-    // Add first page
     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
     
-    // Add additional pages if needed
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    
+    return pdf;
+  };
+
+  const generatePrintPDF = async (report) => {
+    const input = printRef.current;
+    
+    const canvas = await html2canvas(input, {
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+    
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 210;
+    const pageHeight = 297;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    let heightLeft = imgHeight;
+    let position = 0;
+    
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    
     while (heightLeft >= 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
@@ -527,8 +770,6 @@ export default function SalaryReports() {
   const downloadReport = async (report) => {
     try {
       setSelectedReport(report);
-      
-      // Wait a moment for the DOM to update
       setTimeout(async () => {
         const pdf = await generatePDF(report);
         pdf.save(`Salary_Report_${report.employeeName}_${formatMonth(report.month)}_${report.year}.pdf`);
@@ -542,12 +783,8 @@ export default function SalaryReports() {
   const printReport = async (report) => {
     try {
       setSelectedReport(report);
-      
-      // Wait a moment for the DOM to update
       setTimeout(async () => {
-        const pdf = await generatePDF(report);
-        
-        // Open PDF in new window for printing
+        const pdf = await generatePrintPDF(report);
         const pdfBlob = pdf.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
         const printWindow = window.open(pdfUrl);
@@ -577,48 +814,57 @@ export default function SalaryReports() {
     }).format(amount);
   };
 
-  // Generate years for filter (current year and previous 5 years)
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
 
-  // PDF Template Component
+  // Original PDF Template for Download
   const PDFTemplate = ({ report }) => (
     <div ref={reportRef} className="p-6 bg-white" style={{ width: '794px', minHeight: '1123px' }}>
-      <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold">Salary Report</h1>
-        <p className="text-gray-600">{formatMonth(report.month)} {report.year}</p>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <h2 className="text-xl font-bold mb-4">Salary Report Details</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
-          <h3 className="text-lg font-semibold mb-2 border-b pb-1">Employee Information</h3>
-          <div className="space-y-1 text-sm">
+          <h3 className="text-lg font-semibold mb-2 text-gray-800">Employee Information</h3>
+          <div className="space-y-2 text-sm">
             <p><span className="font-medium">Report ID:</span> {report.id}</p>
             <p><span className="font-medium">Employee Number:</span> {report.employeeNumber}</p>
             <p><span className="font-medium">Employee Name:</span> {report.employeeName}</p>
-            <p><span className="font-medium">Category:</span> {report.categaryName}</p>
-            <p><span className="font-medium">Department:</span> {report.departmentName}</p>
+            <p><span className="font-medium">Employee Category:</span> {report.categaryName}</p>
+            <p><span className="font-medium">Employee Department:</span> {report.departmentName}</p>
             <p><span className="font-medium">Period:</span> {formatMonth(report.month)} {report.year}</p>
             <p><span className="font-medium">Date Range:</span> {new Date(report.fromDate).toLocaleDateString()} to {new Date(report.toDate).toLocaleDateString()}</p>
             <p><span className="font-medium">Generated On:</span> {new Date(report.generatedOn).toLocaleDateString()}</p>
           </div>
         </div>
-        
         <div>
-          <h3 className="text-lg font-semibold mb-2 border-b pb-1">Salary Summary</h3>
-          <div className="space-y-1 text-sm">
+          <h3 className="text-lg font-semibold mb-2 text-gray-800">Salary Summary</h3>
+          <div className="space-y-2 text-sm">
+            {!report.isDaySalaryBased && (
+              <p><span className="font-medium">EPF Liable Salary:</span> {formatCurrency(report.epfLiableSalary)}</p>
+            )}
             <p><span className="font-medium">Gross Salary:</span> {formatCurrency(report.grossSalary)}</p>
-            <p><span className="font-medium">Total Deductions:</span> {formatCurrency(report.totalDeductions)}</p>
-            <p><span className="font-medium text-green-600">Net Salary:</span> {formatCurrency(report.netSalary)}</p>
+            <p><span className="font-medium">Net Salary:</span> <span className="font-semibold text-green-600">{formatCurrency(report.netSalary)}</span></p>
           </div>
         </div>
       </div>
-      
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
-          <h3 className="text-lg font-semibold mb-2 border-b pb-1">Earnings</h3>
-          <div className="space-y-1 text-sm">
-            <p><span className="font-medium">Wages:</span> {formatCurrency(report.wages)}</p>
+          <h3 className="text-lg font-semibold mb-2 text-gray-800">Earnings</h3>
+          <div className="space-y-2 text-sm">
+            {report.isDaySalaryBased && (
+              <>
+                <p><span className="font-medium">Day Salary:</span> {formatCurrency(report.daySalary)}</p>
+                <p><span className="font-medium">KPI Rate:</span> {formatCurrency(report.kpiRate)}</p>
+                <p><span className="font-medium">Wages:</span> {formatCurrency(report.wages)}</p>
+              </>
+            )}
+            {!report.isDaySalaryBased && (
+              <>
+                <p><span className="font-medium">Basic Stationary Salary:</span> {formatCurrency(report.basicStationarySal)}</p>
+                <p><span className="font-medium">BRA 1:</span> {formatCurrency(report.bra1)}</p>
+                <p><span className="font-medium">BRA 2:</span> {formatCurrency(report.bra2)}</p>
+                <p><span className="font-medium">Basic Salary:</span> {formatCurrency(report.basicSala)}</p>
+              </>
+            )}
             <p><span className="font-medium">KPI Allowance:</span> {formatCurrency(report.kpiAllowance)}</p>
             <p><span className="font-medium">Incentives:</span> {formatCurrency(report.incentives)}</p>
             <p><span className="font-medium">Bonus:</span> {formatCurrency(report.bonus)}</p>
@@ -631,17 +877,18 @@ export default function SalaryReports() {
             )}
           </div>
         </div>
-        
         <div>
-          <h3 className="text-lg font-semibold mb-2 border-b pb-1">Deductions & Contributions</h3>
-          <div className="space-y-1 text-sm">
+          <h3 className="text-lg font-semibold mb-2 text-gray-800">Deductions & Contributions</h3>
+          <div className="space-y-2 text-sm">
             <p><span className="font-medium">Salary Advances:</span> {formatCurrency(report.salaryAdvances)}</p>
             <p><span className="font-medium">Loans:</span> {formatCurrency(report.loans)}</p>
             <p><span className="font-medium">Other Deductions:</span> {formatCurrency(report.otherDeductions)}</p>
+            <p><span className="font-medium">Total Deductions:</span> {formatCurrency(report.totalDeductions)}</p>
             {!report.isDaySalaryBased && (
               <>
-                <p><span className="font-medium">EPF Employee:</span> {formatCurrency(report.epf1)}</p>
-                <p><span className="font-medium">EPF Employer:</span> {formatCurrency(report.epf2)}</p>
+                <p><span className="font-medium">No Pay:</span> {formatCurrency(report.noPay)}</p>
+                <p><span className="font-medium">EPF 1:</span> {formatCurrency(report.epf1)}</p>
+                <p><span className="font-medium">EPF 2:</span> {formatCurrency(report.epf2)}</p>
                 <p><span className="font-medium">ETF:</span> {formatCurrency(report.etf)}</p>
                 <p><span className="font-medium">Employee Contribution:</span> {formatCurrency(report.employeeContribution)}</p>
               </>
@@ -649,37 +896,254 @@ export default function SalaryReports() {
           </div>
         </div>
       </div>
-      
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2 border-b pb-1">Attendance Details</h3>
+        <h3 className="text-lg font-semibold mb-2 text-gray-800">Attendance Details</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
             <p><span className="font-medium">Working Days:</span> {report.workingDays}</p>
           </div>
-          <div>
-            <p><span className="font-medium">Leave Days:</span> {report.leaveDays}</p>
-          </div>
-          <div>
-            <p><span className="font-medium">Half Days:</span> {report.halfDays}</p>
-          </div>
-          <div>
-            <p><span className="font-medium">No Pay Days:</span> {report.noPayDays}</p>
-          </div>
-          <div>
-            <p><span className="font-medium">Regular OT Hours:</span> {report.ot1Hours}</p>
-          </div>
-          <div>
-            <p><span className="font-medium">Double OT Hours:</span> {report.ot2Hours}</p>
-          </div>
+          {!report.isDaySalaryBased && (
+            <>
+              <div>
+                <p><span className="font-medium">Leave Days:</span> {report.leaveDays}</p>
+              </div>
+              <div>
+                <p><span className="font-medium">Half Days:</span> {report.halfDays}</p>
+              </div>
+              <div>
+                <p><span className="font-medium">No Pay Days:</span> {report.noPayDays}</p>
+              </div>
+              <div>
+                <p><span className="font-medium">Regular OT Hours:</span> {report.ot1Hours}</p>
+              </div>
+              <div>
+                <p><span className="font-medium">Double OT Hours:</span> {report.ot2Hours}</p>
+              </div>
+            </>
+          )}
         </div>
       </div>
-      
       <div className="mt-8 pt-4 border-t text-xs text-gray-500 text-center">
         <p>This is an auto-generated salary report. For any discrepancies, please contact the HR department.</p>
         <p>Generated on: {new Date().toLocaleDateString()}</p>
       </div>
     </div>
   );
+
+// Compact Print Template - Single Page Format
+const PrintTemplate = ({ report }) => (
+  <div ref={printRef} className="p-6 bg-white" style={{ 
+    width: '794px', 
+    minHeight: '1123px', 
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '12px',
+    lineHeight: '1.2'
+  }}>
+    {/* Header - More Compact */}
+    <div className="text-center mb-4 border-b border-gray-300 pb-2">
+      <h1 className="text-lg font-bold text-gray-800 mb-1">Car Service Private Limited</h1>
+      <h2 className="text-lg text-gray-800 mb-1">Opanayake - Sri Lanka</h2>
+      <p className="text-sm text-gray-600 mt-1">PAY SLIP FOR {formatMonth(report.month)} {report.year}</p>
+    </div>
+
+    {/* Employee Information - Compact */}
+    <div className="flex justify-between mb-4">
+      <div>
+        <span className="font-medium">Employee Name: </span>
+        <span>{report.employeeName}</span>
+      </div>
+      <div>
+        <span className="font-medium">Employee No: </span>
+        <span>{report.employeeNumber}</span>
+      </div>
+    </div>
+
+    {/* Main Data Table - Compact Layout */}
+    <table className="w-full border-collapse border border-gray-400 mb-4 text-xs">
+      <thead>
+        <tr className="bg-gray-100">
+          <th className="border border-gray-400 p-1 text-left font-bold w-3/5">Description</th>
+          <th className="border border-gray-400 p-1 text-right font-bold w-2/5">Amount (LKR)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {/* Conditional rendering for Monthly Salary vs Daily Wage */}
+        {report.isDaySalaryBased ? (
+          // Daily Wage Structure
+          <>
+            <tr className="bg-gray-50">
+              <td className="border border-gray-400 p-1 font-bold" colSpan="2">EARNINGS</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Wages</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.wages)}</td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Total Earning</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.wages)}</td>
+            </tr>
+
+            <tr className="bg-gray-50">
+              <td className="border border-gray-400 p-1 font-bold" colSpan="2">ALLOWANCES</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">KPI Bonus</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.kpiAllowance)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Incentives</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.incentives)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Bonus</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.bonus)}</td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Total Allowances</td>
+              <td className="border border-gray-400 p-1 text-right">
+                {formatCurrency(report.kpiAllowance + report.incentives + report.bonus)}
+              </td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Gross Salary</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.grossSalary)}</td>
+            </tr>
+
+            <tr className="bg-gray-50">
+              <td className="border border-gray-400 p-1 font-bold" colSpan="2">DEDUCTIONS</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Salary Advances</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.salaryAdvances)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Loan</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.loans)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Other</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.otherDeductions)}</td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Total Deductions</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.totalDeductions)}</td>
+            </tr>
+            <tr className="font-bold bg-blue-50">
+              <td className="border border-gray-400 p-1">NET SALARY</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.netSalary)}</td>
+            </tr>
+          </>
+        ) : (
+          // Monthly Salary Structure
+          <>
+            <tr className="bg-gray-50">
+              <td className="border border-gray-400 p-1 font-bold" colSpan="2">EARNINGS</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Basic Salary</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.basicStationarySal)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">No Pay Amount</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.noPay)}</td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Total Earning</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.epfLiableSalary)}</td>
+            </tr>
+
+            <tr className="bg-gray-50">
+              <td className="border border-gray-400 p-1 font-bold" colSpan="2">MONTHLY ALLOWANCES</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">KPI Bonus</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.kpiAllowance)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Incentives</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.incentives)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">OT Payment</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.totalOtPayment)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Bonus</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.bonus)}</td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Total Allowances</td>
+              <td className="border border-gray-400 p-1 text-right">
+                {formatCurrency(report.kpiAllowance + report.incentives + report.totalOtPayment + report.bonus)}
+              </td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Gross Salary</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.grossSalary)}</td>
+            </tr>
+
+            <tr className="bg-gray-50">
+              <td className="border border-gray-400 p-1 font-bold" colSpan="2">DEDUCTIONS</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Salary Advances</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.salaryAdvances)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Loan</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.loans)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">Other</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.otherDeductions)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">EPF 8%</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.epf1)}</td>
+            </tr>
+            <tr className="font-bold">
+              <td className="border border-gray-400 p-1">Total Deductions</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.totalDeductions)}</td>
+            </tr>
+            <tr className="font-bold bg-blue-50">
+              <td className="border border-gray-400 p-1">NET SALARY</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.netSalary)}</td>
+            </tr>
+
+            <tr className="bg-gray-50">
+              <td className="border border-gray-400 p-1 font-bold" colSpan="2">EMPLOYER CONTRIBUTION</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">EPF 12%</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.epf2)}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-400 p-1 pl-3">ETF 3%</td>
+              <td className="border border-gray-400 p-1 text-right">{formatCurrency(report.etf)}</td>
+            </tr>
+          </>
+        )}
+      </tbody>
+    </table>
+
+    {/* Footer - More Compact */}
+    <div className="mt-6 pt-3 border-t border-gray-300 text-xs">
+      <div className="flex justify-between items-start">
+        <div className="w-2/3 pr-4">
+          <p className="font-medium mb-2 leading-tight">
+            "I hereby acknowledge the net receipt of my salary after deductions statutory and agreed deductions as per the appointment letter and subsequently issued increment letters which are applicable to calculate the Salary."
+          </p>
+        </div>
+        <div className="w-1/3 text-center">
+          <div className="border-t border-gray-400 pt-6 mt-1">
+            <p className="text-gray-600">________________</p>
+            <p className="text-xs mt-1">Employee Signature</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
@@ -912,13 +1376,12 @@ export default function SalaryReports() {
               <div>
                 <h3 className="text-lg font-semibold mb-2 text-gray-800">Salary Summary</h3>
                 <div className="space-y-2">
-                  {selectedReport.isDaySalaryBased && (
+                  {!selectedReport.isDaySalaryBased && (
                     <>
-                      <p><span className="font-medium">Day Salary:</span> {formatCurrency(selectedReport.epf1)}</p>
+                      <p><span className="font-medium">EPF Liable Salary:</span> {formatCurrency(selectedReport.epfLiableSalary)}</p>
                     </>
                   )}
                   <p><span className="font-medium">Gross Salary:</span> {formatCurrency(selectedReport.grossSalary)}</p>
-                  <p><span className="font-medium">Total Deductions:</span> {formatCurrency(selectedReport.totalDeductions)}</p>
                   <p><span className="font-medium">Net Salary:</span> <span className="font-semibold text-green-600">{formatCurrency(selectedReport.netSalary)}</span></p>
                 </div>
               </div>
@@ -928,7 +1391,22 @@ export default function SalaryReports() {
               <div>
                 <h3 className="text-lg font-semibold mb-2 text-gray-800">Earnings</h3>
                 <div className="space-y-2">
-                  <p><span className="font-medium">Wages:</span> {formatCurrency(selectedReport.wages)}</p>
+                  {selectedReport.isDaySalaryBased && (
+                    <>
+                      <p><span className="font-medium">Day Salary:</span> {formatCurrency(selectedReport.daySalary)}</p>
+                      <p><span className="font-medium">KPI Rate:</span> {formatCurrency(selectedReport.kpiRate)}</p>
+                      <p><span className="font-medium">Wages:</span> {formatCurrency(selectedReport.wages)}</p>
+                    </>
+                  )}
+                  
+                  {!selectedReport.isDaySalaryBased && (
+                    <>
+                      <p><span className="font-medium">Basic Stationary Salary:</span> {formatCurrency(selectedReport.basicStationarySal)}</p>
+                      <p><span className="font-medium">BRA 1:</span> {formatCurrency(selectedReport.bra1)}</p>
+                      <p><span className="font-medium">BRA 2:</span> {formatCurrency(selectedReport.bra2)}</p>
+                      <p><span className="font-medium">Basic Salary:</span> {formatCurrency(selectedReport.basicSala)}</p>
+                    </>
+                  )}
                   <p><span className="font-medium">KPI Allowance:</span> {formatCurrency(selectedReport.kpiAllowance)}</p>
                   <p><span className="font-medium">Incentives:</span> {formatCurrency(selectedReport.incentives)}</p>
                   <p><span className="font-medium">Bonus:</span> {formatCurrency(selectedReport.bonus)}</p>
@@ -948,10 +1426,12 @@ export default function SalaryReports() {
                   <p><span className="font-medium">Salary Advances:</span> {formatCurrency(selectedReport.salaryAdvances)}</p>
                   <p><span className="font-medium">Loans:</span> {formatCurrency(selectedReport.loans)}</p>
                   <p><span className="font-medium">Other Deductions:</span> {formatCurrency(selectedReport.otherDeductions)}</p>
+                  <p><span className="font-medium">Total Deductions:</span> {formatCurrency(selectedReport.totalDeductions)}</p>
                   {!selectedReport.isDaySalaryBased && (
                     <>
-                      <p><span className="font-medium">EPF Employee:</span> {formatCurrency(selectedReport.epf1)}</p>
-                      <p><span className="font-medium">EPF Employer:</span> {formatCurrency(selectedReport.epf2)}</p>
+                      <p><span className="font-medium">No Pay:</span> {formatCurrency(selectedReport.noPay)}</p>
+                      <p><span className="font-medium">EPF 1:</span> {formatCurrency(selectedReport.epf1)}</p>
+                      <p><span className="font-medium">EPF 2:</span> {formatCurrency(selectedReport.epf2)}</p>
                       <p><span className="font-medium">ETF:</span> {formatCurrency(selectedReport.etf)}</p>
                       <p><span className="font-medium">Employee Contribution:</span> {formatCurrency(selectedReport.employeeContribution)}</p>
                     </>
@@ -1013,10 +1493,17 @@ export default function SalaryReports() {
         </div>
       )}
 
-      {/* Hidden PDF Template (for generating PDFs) */}
+      {/* Hidden PDF Template (for generating PDF downloads) */}
       {selectedReport && (
         <div className="fixed -left-[9999px] top-0">
           <PDFTemplate report={selectedReport} />
+        </div>
+      )}
+
+      {/* Hidden Print Template (for printing) */}
+      {selectedReport && (
+        <div className="fixed -left-[9999px] top-0">
+          <PrintTemplate report={selectedReport} />
         </div>
       )}
     </div>

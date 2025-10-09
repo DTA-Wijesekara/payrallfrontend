@@ -25,12 +25,16 @@ const LINKS = [
   { to: '/generatesalary', label: 'Generate Salary', Icon: HiDatabase },
   { to: '/salaryreports', label: 'Salary Reports', Icon: HiDocument },
   { to: '/leaves', label: 'Leaves', Icon: HiFire },
+  // { to: '/leavesnew', label: 'Leavesnew', Icon: HiFire },
   { to: '/Otusage', label: 'OT Usage', Icon: HiCalculator },
   { to: '/loan', label: 'Loans', Icon: HiCash },
-  { to: '/empcategories', label: 'Employee Categories', Icon: HiDuplicate },
+  
   { to: '/departments', label: 'Departments', Icon: HiGlobe },
+  
+  { to: '/specialHolidays', label: 'Mercantile Holidays', Icon: HiCalendar },
+  { to: '/empcategories', label: 'Employee Categories', Icon: HiDuplicate },
   { to: '/OT', label: 'OT Settings', Icon: HiFlag },
-  { to: '/specialHolidays', label: 'Special Holidays', Icon: HiCalendar },
+  { to: '/users', label: 'Users', Icon: HiUser }
 ];
 
 export default function Sidebar() {
@@ -66,7 +70,7 @@ export default function Sidebar() {
     };
   }, [mobileOpen]);
 
-  const baseLink = 'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm truncate';
+  const baseLink = 'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm truncate no-underline font-medium tracking-wide';
 
   return (
     <>
@@ -164,9 +168,7 @@ export default function Sidebar() {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `${baseLink} ${isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'} ${
-                    collapsed ? 'justify-center' : 'justify-start'
-                  }`
+                  `${baseLink} ${isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'} ${collapsed ? 'justify-center' : 'justify-start'}`
                 }
               >
                 <Icon className="w-5 h-5" />
