@@ -34,6 +34,7 @@ export default function Employees() {
     kpiRate: 0,
     kpiAmount: 0,
     bra1: 0,
+    totalCompensation: 0,
     bra2: 0,
     isActive: true,
     bankAccountNumber: "",
@@ -216,6 +217,7 @@ const fetchEmployeeCategories = async () => {
       kpiAmount: newEmployee.kpiAmount ? parseInt(newEmployee.kpiAmount) : null,
       bra1: newEmployee.bra1 ? parseInt(newEmployee.bra1) : null,
       bra2: newEmployee.bra2 ? parseInt(newEmployee.bra2) : null,
+      totalCompensation: newEmployee.totalCompensation ? parseInt(newEmployee.totalCompensation) : null,
       isActive: Boolean(newEmployee.isActive),
       bankAccountNumber: newEmployee.bankAccountNumber || "",
       bankName: newEmployee.bankName || "",
@@ -256,6 +258,7 @@ const fetchEmployeeCategories = async () => {
       basicSalary: 0,
       daySalary: 0,
       kpiRate: 0,
+      totalCompensation: 0,
       kpiAmount: 0,
       bra1: 0,
       bra2: 0,
@@ -459,6 +462,17 @@ const deleteEmployee = async (id) => {
                   />
                 </div>
               </div>
+              <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Total Compensation</label>
+                  <input
+                    type="text"
+                    name="totalCompensation"
+                    value={editEmployee.totalCompensation || ""}
+                    onChange={handleEditChange}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    required
+                  />
+                </div>
             </div>
 
             {/* Employment Details Section */}
@@ -781,6 +795,17 @@ const deleteEmployee = async (id) => {
                     value={newEmployee.address}
                     onChange={handleNewEmployeeChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Total Compensation</label>
+                  <input
+                    type="text"
+                    name="totalCompensation"
+                    value={newEmployee.totalCompensation}
+                    onChange={handleNewEmployeeChange}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    
                   />
                 </div>
               </div>
@@ -1401,16 +1426,19 @@ const deleteEmployee = async (id) => {
                   <p><span className="font-medium">NIC:</span> {selectedEmployee.nic}</p>
                   <p><span className="font-medium">Joined Date:</span> {formatDate(selectedEmployee.joinedDate)}</p>
                   {selectedEmployee && !selectedEmployee.isActive && (
-  <p>
-    <span className="font-medium">Termination Date:</span>{" "}
-    {formatDate(selectedEmployee.terminationDate)}
-  </p>
-)}
+                    <p>
+                      <span className="font-medium">Termination Date:</span>{" "}
+                      {formatDate(selectedEmployee.terminationDate)}
+                    </p>
+                  )}
                   <p><span className="font-medium">Employee Category:</span> {
                     employeeCategories.find(cat => cat.id === selectedEmployee.employeeCategoriesID)?.categoryName || 'N/A'
                   }</p>
                   <p><span className="font-medium">Department:</span> {
                     departments.find(dept => dept.id === selectedEmployee.departmentID)?.departmentName || 'N/A'
+                  }</p>
+                  <p><span className="font-medium">Total Compensation:</span> {
+                    selectedEmployee.totalCompensation || 'N/A'
                   }</p>
                   {/* <p><span className="font-medium">Termination Date:</span> {formatDate(selectedEmployee.terminationDate)}</p> */}
                 </div>

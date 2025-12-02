@@ -24,13 +24,11 @@ const LINKS = [
   { to: '/employees', label: 'Employees', Icon: HiUsers },
   { to: '/generatesalary', label: 'Generate Salary', Icon: HiDatabase },
   { to: '/salaryreports', label: 'Salary Reports', Icon: HiDocument },
-  { to: '/leaves', label: 'Leaves', Icon: HiFire },
-  // { to: '/leavesnew', label: 'Leavesnew', Icon: HiFire },
+  // { to: '/leaves', label: 'Leaves', Icon: HiFire },
+  { to: '/leavesnew', label: 'Leavesnew', Icon: HiFire },
   { to: '/Otusage', label: 'OT Usage', Icon: HiCalculator },
   { to: '/loan', label: 'Loans', Icon: HiCash },
-  
   { to: '/departments', label: 'Departments', Icon: HiGlobe },
-  
   { to: '/specialHolidays', label: 'Mercantile Holidays', Icon: HiCalendar },
   { to: '/empcategories', label: 'Employee Categories', Icon: HiDuplicate },
   { to: '/OT', label: 'OT Settings', Icon: HiFlag },
